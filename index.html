@@ -132,7 +132,7 @@ section{padding:100px 5%;position:relative;z-index:1}
 .pipeline-node.lit{color:var(--teal);border-color:rgba(0,212,170,.3)}
 .pipeline-arrow{align-self:center;color:var(--dimmer)}
 
-.who-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:32px}
+.who-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:32px}
 .who-card{padding:24px 20px}
 .who-tag{font-family:var(--mono);font-size:10px;color:var(--purple);letter-spacing:2px;margin-bottom:12px;display:block}
 .who-card h4{font-size:15px;font-weight:700;margin-bottom:8px}
@@ -488,6 +488,16 @@ footer{background:var(--dark);border-top:1px solid var(--border);padding:48px 5%
         <h4>Shops &amp; Retail</h4>
         <p>POS terminals, receipt printers, barcode scanners, routers.</p>
       </div>
+      <div class="who-card glass">
+        <span class="who-tag">PROFESSIONAL</span>
+        <h4>Medical, Legal &amp; Accounting</h4>
+        <p>Client-data workstations, secure networks, uninterrupted uptime.</p>
+      </div>
+      <div class="who-card glass">
+        <span class="who-tag">PROPERTY</span>
+        <h4>Property Management</h4>
+        <p>Office systems, access control, shared network infrastructure.</p>
+      </div>
     </div>
   </div>
 </section>
@@ -721,20 +731,6 @@ footer{background:var(--dark);border-top:1px solid var(--border);padding:48px 5%
   </div>
 </section>
 
-<!-- INDUSTRIES -->
-<section class="how" id="industries" style="padding-top:0">
-  <div class="section-inner">
-    <span class="hud-tag">// Industries served</span>
-    <h2 class="section-title">Who we work with</h2>
-    <div class="who-grid" style="margin-top:32px">
-      <div class="who-card glass"><span class="who-tag">EDUCATION</span><h4>Schools &amp; Campuses</h4></div>
-      <div class="who-card glass"><span class="who-tag">RETAIL</span><h4>Shops &amp; Retail</h4></div>
-      <div class="who-card glass"><span class="who-tag">PROFESSIONAL</span><h4>Medical, Legal &amp; Accounting Offices</h4></div>
-      <div class="who-card glass"><span class="who-tag">PROPERTY</span><h4>Property Management</h4></div>
-    </div>
-  </div>
-</section>
-
 <!-- COVERAGE MATRIX -->
 <section class="coverage" id="coverage">
   <div class="section-inner">
@@ -912,8 +908,12 @@ footer{background:var(--dark);border-top:1px solid var(--border);padding:48px 5%
         </div>
         <div>
           <div style="font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:1px;margin-bottom:12px">ENTER TICKET ID OR YOUR NAME</div>
-          <input class="tracker-search" type="text" id="track-input" placeholder="e.g. PPT-4821 or Thabo..." oninput="searchRepairs()">
-          <div id="track-results"><div class="tracker-empty">Enter your ticket ID or name above to find your repair status.</div></div>
+          <input class="tracker-search" type="text" id="track-input" placeholder="e.g. PPT-4821 or Thabo...">
+          <button class="submit-btn" style="margin-top:14px" onclick="requestStatusOnWA()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></svg>
+            CHECK STATUS ON WHATSAPP
+          </button>
+          <div id="track-results"><div class="tracker-empty">We'll reply on WhatsApp with your live status — usually within a few hours.</div></div>
         </div>
       </div>
     </div>
@@ -950,7 +950,7 @@ footer{background:var(--dark);border-top:1px solid var(--border);padding:48px 5%
           </li>
           <li>
             <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-            pixelprotechsolutions@gmail.com
+            <a href="mailto:pixelprotechsolutions@proton.me" style="color:inherit;text-decoration:none">pixelprotechsolutions@proton.me</a>
           </li>
           <li>
             <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
@@ -1099,12 +1099,6 @@ const PRICING={
   'No sound':[350,650],'Won\'t connect to WiFi':[350,500],'Screen damaged':[600,1400],
   'Remote not working':[250,400],'HDMI port fault':[400,700]
 };
-const MOCK_REPAIRS=[
-  {id:'PPT-4821',name:'Sipho Dlamini',device:'Laptop',issue:'Screen cracked / broken',status:'repairing'},
-  {id:'PPT-3307',name:'Naledi Khumalo',device:'Cellphone',issue:'Won\'t charge',status:'ready'},
-  {id:'PPT-5512',name:'Tebogo Mokoena',device:'Desktop Tower',issue:'Slow performance',status:'diagnosing'},
-  {id:'PPT-6094',name:'Ayanda Mthembu',device:'Smart TV',issue:'No picture',status:'received'}
-];
 const STAGE_LABELS={received:'RECEIVED',diagnosing:'DIAGNOSING',repairing:'IN REPAIR',ready:'READY ✓'};
 const STAGE_CLASS={received:'s-received',diagnosing:'s-diagnosing',repairing:'s-repairing',ready:'s-ready'};
 const STAGES=['Received','Diagnosed','In Repair','Ready for Collection'];
@@ -1120,7 +1114,6 @@ function switchPortal(tab){
   document.querySelectorAll('.portal-tab').forEach((t,i)=>t.classList.toggle('active',['diagnose','track'][i]===tab));
   document.querySelectorAll('.portal-section').forEach(s=>s.classList.remove('active'));
   document.getElementById('portal-'+tab).classList.add('active');
-  if(tab==='track') searchRepairs();
 }
 
 function pickOpt(el,group,val){
@@ -1192,28 +1185,13 @@ function resetDiag(){
   document.getElementById('prog').style.width='20%';
 }
 
-function searchRepairs(){
-  const q=(document.getElementById('track-input').value||'').toLowerCase().trim();
+function requestStatusOnWA(){
+  const q=(document.getElementById('track-input').value||'').trim();
   const res=document.getElementById('track-results');
-  if(!q){res.innerHTML='<div class="tracker-empty">Enter your ticket ID or name above to find your repair status.</div>';return;}
-  const found=MOCK_REPAIRS.filter(r=>r.id.toLowerCase().includes(q)||r.name.toLowerCase().includes(q));
-  if(!found.length){res.innerHTML='<div class="tracker-empty">No repair found. Try your ticket ID (e.g. PPT-4821) or your name.</div>';return;}
-  res.innerHTML=found.map(r=>{
-    const done=STAGE_DONE[r.status];
-    const tl=STAGES.map((s,i)=>{
-      const cls=i<done?'tl-dot-done':i===done-1?'tl-dot-active':'tl-dot-pending';
-      const tcls=i<done?'tl-text tl-text-done':i===done-1?'tl-text tl-text-active':'tl-text';
-      return`<div class="tl-row"><div class="tl-dot ${cls}"></div><span class="${tcls}">${s}</span></div>`;
-    }).join('');
-    return`<div class="repair-card glass">
-<div class="repair-top">
-<div><div class="repair-device">${r.device}</div><div class="repair-issue">${r.issue}</div></div>
-<span class="status-badge ${STAGE_CLASS[r.status]}">${STAGE_LABELS[r.status]}</span>
-</div>
-<div class="repair-tid">TICKET: <span>${r.id}</span> · ${r.name}</div>
-<div class="repair-timeline">${tl}</div>
-</div>`;
-  }).join('');
+  if(!q){res.innerHTML='<div class="tracker-empty">Enter your ticket ID or name above first.</div>';document.getElementById('track-input').focus();return;}
+  const msg='Hi PixelProTech! Please can you send me a status update?\n\nTicket ID / Name: '+q;
+  window.open('https://wa.me/27651971461?text='+encodeURIComponent(msg),'_blank');
+  res.innerHTML='<div class="tracker-empty">Opening WhatsApp — send the message and we\'ll reply with your status.</div>';
 }
 
 function quoteFor(label){
