@@ -321,6 +321,36 @@ footer{background:var(--dark);border-top:1px solid var(--border);padding:48px 5%
 .chat-bubble{position:fixed;bottom:24px;right:24px;width:48px;height:48px;background:var(--teal);border-radius:50%;display:grid;place-items:center;cursor:pointer;z-index:200;box-shadow:0 4px 24px rgba(0,212,170,.35)}
 .chat-bubble svg{width:22px;height:22px;stroke:#000;fill:none;stroke-width:2}
 
+/* ===== HARDWARE SUPPLY & INSTALLATION (added) ===== */
+.hardware{background:var(--black)}
+.hw-flow{display:flex;flex-wrap:wrap;gap:8px;margin:28px 0 8px;font-family:var(--mono);font-size:10px;letter-spacing:1px}
+.hw-flow .pipeline-node.lit{color:var(--teal);border-color:rgba(0,212,170,.3)}
+.hw-cats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:28px 0 0}
+.hw-cat{padding:14px 16px;font-family:var(--mono);font-size:12px;color:var(--muted);display:flex;gap:10px;align-items:center}
+.hw-cat::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--purple);box-shadow:0 0 6px var(--purple-glow);flex-shrink:0}
+.hw-honest{margin-top:16px;padding:16px 20px;font-family:var(--mono);font-size:11px;color:var(--dimmer);line-height:1.8}
+.hw-honest strong{color:var(--muted)}
+.hw-form-wrap{margin-top:48px;padding:32px 30px}
+.hw-form-wrap h3{font-size:22px;font-weight:800;letter-spacing:-.5px;margin-bottom:6px}
+.hw-fieldset{border:none;margin:26px 0 0;padding:0}
+.hw-fieldset legend{font-family:var(--mono);font-size:11px;color:var(--teal);letter-spacing:2px;text-transform:uppercase;margin-bottom:14px;padding:0}
+.hw-form-wrap .form-group label .req{color:var(--purple)}
+.hw-checks{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:6px}
+.hw-check{display:flex;align-items:flex-start;gap:9px;font-family:var(--mono);font-size:11px;color:var(--muted);line-height:1.5;cursor:pointer;padding:9px 12px;border:1px solid var(--border);border-radius:4px;background:rgba(255,255,255,.02)}
+.hw-check input{width:auto;margin-top:2px;accent-color:#7b2fff;flex-shrink:0}
+.hw-check:hover{border-color:var(--purple)}
+.hw-unknown{border-color:rgba(0,212,170,.4);background:rgba(0,212,170,.05);color:var(--white);margin-top:14px}
+.hw-consent{margin-top:20px}
+.hw-err{font-family:var(--mono);font-size:11px;color:#ff6b6b;margin-top:12px;min-height:16px}
+.hw-result{display:none;margin-top:28px;border:1px solid var(--teal);border-radius:8px;padding:26px;background:rgba(0,212,170,.04)}
+.hw-result .hw-ref{font-family:var(--mono);font-size:22px;color:var(--purple);font-weight:700;margin:6px 0 14px}
+.hw-result p{font-family:var(--mono);font-size:12px;color:var(--muted);line-height:1.8;margin-bottom:12px}
+.hw-result pre{font-family:var(--mono);font-size:11px;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:6px;padding:14px;white-space:pre-wrap;word-break:break-word;margin:12px 0 16px;max-height:260px;overflow:auto}
+.hw-actions{display:flex;gap:12px;flex-wrap:wrap}
+.hw-actions .btn-primary,.hw-actions .btn-secondary{padding:12px 22px;font-size:12px}
+@media(max-width:900px){.hw-cats,.hw-checks{grid-template-columns:1fr 1fr}.hw-form-wrap{padding:24px 18px}}
+@media(max-width:560px){.hw-cats,.hw-checks{grid-template-columns:1fr}}
+
 [class*="watermark"],[class*="poweredby"],[class*="branding"],[id*="watermark"]{display:none!important}
 
 @media(max-width:900px){
@@ -362,6 +392,8 @@ footer{background:var(--dark);border-top:1px solid var(--border);padding:48px 5%
     </a>
     <ul class="nav-links">
       <li><a href="#services">Services</a></li>
+      <li><a href="#hardware">Hardware</a></li>
+      <li><a href="#intl">Intl. Tech</a></li>
       <li><a href="#credentials">Credentials</a></li>
       <li><a href="#coverage">Coverage</a></li>
       <li><a href="#contact">Support</a></li>
@@ -585,6 +617,213 @@ footer{background:var(--dark);border-top:1px solid var(--border);padding:48px 5%
           <p>Printers, scanners, POS peripherals and office equipment.</p>
           <div class="svc-reveal"><div class="svc-reveal-inner">// Includes: driver setup, network printer deployment</div></div>
         </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HARDWARE SUPPLY / INSTALLATION / VERIFICATION (added) -->
+<section class="hardware" id="hardware">
+  <div class="section-inner">
+    <span class="hud-tag">// Hardware supply module</span>
+    <h2 class="section-title">Hardware Supply · Installation ·<br><span style="color:var(--teal)">Verification</span></h2>
+    <p class="section-sub">PixelProTech helps schools, businesses and individuals restore, upgrade and improve their computer equipment. We assess what is actually needed, source the part, quote it transparently, install it and test it.</p>
+
+    <div class="hw-flow">
+      <span class="pipeline-node lit">REQUIREMENT ASSESSMENT</span><span class="pipeline-arrow">→</span>
+      <span class="pipeline-node lit">COMPONENT SOURCING</span><span class="pipeline-arrow">→</span>
+      <span class="pipeline-node lit">QUOTATION</span><span class="pipeline-arrow">→</span>
+      <span class="pipeline-node">CLIENT APPROVAL</span><span class="pipeline-arrow">→</span>
+      <span class="pipeline-node">PROCUREMENT</span><span class="pipeline-arrow">→</span>
+      <span class="pipeline-node">DELIVERY</span><span class="pipeline-arrow">→</span>
+      <span class="pipeline-node">INSTALLATION</span><span class="pipeline-arrow">→</span>
+      <span class="pipeline-node">TESTING</span><span class="pipeline-arrow">→</span>
+      <span class="pipeline-node">HANDOVER</span>
+    </div>
+
+    <div class="hw-cats">
+      <div class="hw-cat glass">Desktop computers</div>
+      <div class="hw-cat glass">Laptop computers</div>
+      <div class="hw-cat glass">RAM upgrades &amp; replacements</div>
+      <div class="hw-cat glass">SSD upgrades &amp; replacements</div>
+      <div class="hw-cat glass">HDD replacements</div>
+      <div class="hw-cat glass">Power supplies</div>
+      <div class="hw-cat glass">Cooling components</div>
+      <div class="hw-cat glass">Other compatible components</div>
+      <div class="hw-cat glass">Full replacement where repair is uneconomical</div>
+    </div>
+
+    <div class="hw-honest glass">
+      <strong>// How we quote:</strong> Every quotation is prepared from supplier prices obtained for your specific job — nothing is a catalogue price. Genuine branded parts and compatible alternatives are clearly labelled as such. Hardware is ordered only after you approve the quotation and the agreed payment terms are met. Delivery times depend on supplier stock and logistics and are confirmed in the quotation. One computer or a whole computer laboratory — both are welcome.
+    </div>
+
+    <div class="hw-form-wrap glass" id="hw-quote">
+      <span class="hud-tag">// Hardware quotation request</span>
+      <h3>Request a hardware quotation</h3>
+      <p class="section-sub" style="max-width:680px">Don't know the exact specification? That's fine — tick the assessment option below and we'll work out what your equipment needs before recommending anything.</p>
+
+      <form id="hw-form" novalidate onsubmit="return hwSubmit(event)" autocomplete="off">
+        <fieldset class="hw-fieldset">
+          <legend>01 · Client details</legend>
+          <div class="form-row">
+            <div class="form-group"><label for="hw-org">School or company name <span class="req">*</span></label><input type="text" id="hw-org" maxlength="120" placeholder="e.g. school, company or your own name"></div>
+            <div class="form-group"><label for="hw-contact">Contact person <span class="req">*</span></label><input type="text" id="hw-contact" maxlength="80"></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label for="hw-email">Email address <span class="req">*</span></label><input type="email" id="hw-email" maxlength="120"></div>
+            <div class="form-group"><label for="hw-tel">Telephone number <span class="req">*</span></label><input type="tel" id="hw-tel" maxlength="20"></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label for="hw-loc">Physical location (suburb / town) <span class="req">*</span></label><input type="text" id="hw-loc" maxlength="120" placeholder="e.g. Centurion, Midrand, Soweto"></div>
+            <div class="form-group"><label for="hw-pref">Preferred contact method</label>
+              <select id="hw-pref"><option>WhatsApp</option><option>Phone call</option><option>Email</option></select></div>
+          </div>
+        </fieldset>
+
+        <fieldset class="hw-fieldset">
+          <legend>02 · What do you need quoted?</legend>
+          <div class="hw-checks" id="hw-needs">
+            <label class="hw-check"><input type="checkbox" value="Desktop computer(s)"> Desktop computers</label>
+            <label class="hw-check"><input type="checkbox" value="Laptop computer(s)"> Laptop computers</label>
+            <label class="hw-check"><input type="checkbox" value="RAM"> RAM</label>
+            <label class="hw-check"><input type="checkbox" value="SSD"> SSD</label>
+            <label class="hw-check"><input type="checkbox" value="HDD"> HDD</label>
+            <label class="hw-check"><input type="checkbox" value="Power supply"> Power supply</label>
+            <label class="hw-check"><input type="checkbox" value="Cooling"> Cooling</label>
+            <label class="hw-check"><input type="checkbox" value="Other component"> Other component</label>
+            <label class="hw-check"><input type="checkbox" value="Full computer replacement"> Full replacement</label>
+          </div>
+          <label class="hw-check hw-unknown"><input type="checkbox" id="hw-unknown"> I don't know which component my computer needs. Please assess my requirements.</label>
+        </fieldset>
+
+        <fieldset class="hw-fieldset">
+          <legend>03 · Equipment details</legend>
+          <div class="form-row">
+            <div class="form-group"><label for="hw-type">Equipment type <span class="req">*</span></label>
+              <select id="hw-type"><option value="">Select…</option><option>Desktop</option><option>Laptop</option><option>Server</option><option>Mixed / computer laboratory</option><option>Other</option></select></div>
+            <div class="form-group"><label for="hw-qty">Number of machines <span class="req">*</span></label><input type="number" id="hw-qty" min="1" max="1000" value="1" inputmode="numeric"></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label for="hw-make">Manufacturer</label><input type="text" id="hw-make" maxlength="60" placeholder="e.g. HP, Dell, Lenovo — or unknown"></div>
+            <div class="form-group"><label for="hw-model">Model</label><input type="text" id="hw-model" maxlength="80" placeholder="Usually on the label under the laptop / back of the PC"></div>
+          </div>
+          <div class="form-group"><label for="hw-problem">Current problem or upgrade requirement <span class="req">*</span></label><textarea id="hw-problem" maxlength="800" placeholder="e.g. Slow and freezing, want it faster / won't boot / need 10 PCs replaced for a lab"></textarea></div>
+          <div class="form-row">
+            <div class="form-group"><label for="hw-ram">Existing RAM, if known</label><input type="text" id="hw-ram" maxlength="40" placeholder="e.g. 4 GB"></div>
+            <div class="form-group"><label for="hw-store">Existing storage, if known</label><input type="text" id="hw-store" maxlength="60" placeholder="e.g. 500 GB HDD"></div>
+          </div>
+          <div class="form-group"><label for="hw-want">Desired upgrade, if known</label><input type="text" id="hw-want" maxlength="120" placeholder="e.g. 8 GB RAM + 256 GB SSD"></div>
+          <div class="form-group"><label for="hw-other">Other relevant technical information</label><textarea id="hw-other" maxlength="600" placeholder="Operating system, age of machine, earlier technician assessment, etc."></textarea></div>
+        </fieldset>
+
+        <fieldset class="hw-fieldset">
+          <legend>04 · Supporting information (optional)</legend>
+          <p style="font-family:var(--mono);font-size:11px;color:var(--dimmer);line-height:1.8;margin-bottom:12px">This page has no file-upload server, so files are never uploaded here. Tick what you have and send it as an attachment on WhatsApp or email after you submit — we'll match it to your reference number.</p>
+          <div class="hw-checks" id="hw-files">
+            <label class="hw-check"><input type="checkbox" value="Photo of machine/component"> Photo of machine / component</label>
+            <label class="hw-check"><input type="checkbox" value="Screenshot of system specifications"> Screenshot of specifications</label>
+            <label class="hw-check"><input type="checkbox" value="Equipment list / spreadsheet"> Equipment list / spreadsheet</label>
+            <label class="hw-check"><input type="checkbox" value="Existing technician assessment"> Existing technician assessment</label>
+          </div>
+        </fieldset>
+
+        <label class="hw-check hw-consent"><input type="checkbox" id="hw-consent"> I consent to PixelProTech Solutions (Pty) Ltd contacting me and processing the information I've provided for the purpose of preparing a quotation. I have not included passwords or unnecessary personal information. <span class="req" style="color:var(--purple)">*</span></label>
+
+        <div class="hw-err" id="hw-err" role="alert" aria-live="polite"></div>
+        <button type="submit" class="submit-btn" style="margin-top:8px">PREPARE MY QUOTATION REQUEST →</button>
+      </form>
+
+      <div class="hw-result" id="hw-result">
+        <div style="font-family:var(--mono);font-size:10px;color:var(--dimmer);letter-spacing:2px">REQUEST REFERENCE</div>
+        <div class="hw-ref" id="hw-ref"></div>
+        <p><strong style="color:var(--white)">Your request is ready but not yet sent.</strong> Tap one of the buttons below to send it to us — your message app or email app will open with everything filled in. Nothing reaches PixelProTech until you press send there.</p>
+        <pre id="hw-preview"></pre>
+        <div class="hw-actions">
+          <a class="btn-primary" id="hw-wa" href="#" target="_blank" rel="noopener">Send on WhatsApp</a>
+          <a class="btn-secondary" id="hw-mail" href="#">Send by email</a>
+          <button type="button" class="btn-secondary" onclick="hwCopy()">Copy text</button>
+          <button type="button" class="btn-secondary" onclick="hwReset()">New request</button>
+        </div>
+        <p id="hw-note" style="margin-top:14px;font-size:11px;color:var(--dimmer)"></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- INTERNATIONAL TECHNOLOGY SERVICES (added) -->
+<section class="hardware" id="intl" style="background:var(--dark);border-top:1px solid var(--border)">
+  <div class="section-inner">
+    <span class="hud-tag">// International technology</span>
+    <h2 class="section-title">Internationally sourced software<br><span style="color:var(--purple)">&amp; technology services</span></h2>
+    <p class="section-sub">South African businesses, schools and individuals often need software and technology services that are built overseas. Tell us what you need — PixelProTech assesses it, and quotes and implements only what we are authorised and able to supply.</p>
+
+    <div class="hw-cats">
+      <div class="hw-cat glass">Software subscriptions</div>
+      <div class="hw-cat glass">Cloud services</div>
+      <div class="hw-cat glass">Cybersecurity solutions</div>
+      <div class="hw-cat glass">Backup solutions</div>
+      <div class="hw-cat glass">Remote IT tools</div>
+      <div class="hw-cat glass">Business automation</div>
+      <div class="hw-cat glass">Implementation &amp; technical support</div>
+    </div>
+
+    <div class="hw-honest glass">
+      <strong>// What we list here:</strong> only products and services PixelProTech has been approved in writing to supply. Setup and implementation charges are shown separately from recurring subscription charges, in the currency stated on the quotation. An enquiry is not an order and does not imply that any particular product is available.
+    </div>
+
+    <div id="ix-catalogue" style="margin-top:20px"></div>
+
+    <div class="hw-form-wrap glass" id="ix-quote">
+      <span class="hud-tag">// Technology enquiry</span>
+      <h3>Enquire about an international technology service</h3>
+      <p class="section-sub" style="max-width:680px">Describe what you are trying to achieve. If we can't supply it, we'll say so.</p>
+      <form id="ix-form" novalidate onsubmit="return ixSubmit(event)" autocomplete="off">
+        <fieldset class="hw-fieldset">
+          <legend>01 · Your details</legend>
+          <div class="form-row">
+            <div class="form-group"><label for="ix-org">Organisation or your name <span class="req">*</span></label><input type="text" id="ix-org" maxlength="120"></div>
+            <div class="form-group"><label for="ix-contact">Contact person <span class="req">*</span></label><input type="text" id="ix-contact" maxlength="80"></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label for="ix-email">Email address <span class="req">*</span></label><input type="email" id="ix-email" maxlength="120"></div>
+            <div class="form-group"><label for="ix-tel">Telephone number <span class="req">*</span></label><input type="tel" id="ix-tel" maxlength="20"></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label for="ix-loc">Location (town / suburb) <span class="req">*</span></label><input type="text" id="ix-loc" maxlength="120"></div>
+            <div class="form-group"><label for="ix-pref">Preferred contact method</label><select id="ix-pref"><option>WhatsApp</option><option>Phone call</option><option>Email</option></select></div>
+          </div>
+        </fieldset>
+        <fieldset class="hw-fieldset">
+          <legend>02 · What are you interested in?</legend>
+          <div class="hw-checks" id="ix-cats">
+            <label class="hw-check"><input type="checkbox" value="Software subscriptions"> Software subscriptions</label>
+            <label class="hw-check"><input type="checkbox" value="Cloud services"> Cloud services</label>
+            <label class="hw-check"><input type="checkbox" value="Cybersecurity"> Cybersecurity</label>
+            <label class="hw-check"><input type="checkbox" value="Backup"> Backup</label>
+            <label class="hw-check"><input type="checkbox" value="Remote IT tools"> Remote IT tools</label>
+            <label class="hw-check"><input type="checkbox" value="Business automation"> Business automation</label>
+            <label class="hw-check"><input type="checkbox" value="Implementation and support"> Implementation &amp; support</label>
+            <label class="hw-check"><input type="checkbox" value="Not sure — please advise"> Not sure — please advise</label>
+          </div>
+          <div class="form-group" style="margin-top:14px"><label for="ix-need">What do you need? <span class="req">*</span></label><textarea id="ix-need" maxlength="800" placeholder="Describe the problem or the product you have in mind (name it if you know it)"></textarea></div>
+          <div class="form-group"><label for="ix-scale">Number of users / devices / sites</label><input type="text" id="ix-scale" maxlength="80" placeholder="e.g. 12 users, 1 office"></div>
+        </fieldset>
+        <label class="hw-check hw-consent"><input type="checkbox" id="ix-consent"> I consent to PixelProTech Solutions (Pty) Ltd contacting me and processing the information I've provided to assess and quote my enquiry. I have not included passwords or unnecessary personal information. <span class="req" style="color:var(--purple)">*</span></label>
+        <div class="hw-err" id="ix-err" role="alert" aria-live="polite"></div>
+        <button type="submit" class="submit-btn" style="margin-top:8px">PREPARE MY ENQUIRY →</button>
+      </form>
+      <div class="hw-result" id="ix-result">
+        <div style="font-family:var(--mono);font-size:10px;color:var(--dimmer);letter-spacing:2px">ENQUIRY REFERENCE</div>
+        <div class="hw-ref" id="ix-ref"></div>
+        <p><strong style="color:var(--white)">Your enquiry is ready but not yet sent.</strong> Tap a button below — your message app or email app opens with everything filled in. Nothing reaches PixelProTech until you press send there.</p>
+        <pre id="ix-preview"></pre>
+        <div class="hw-actions">
+          <a class="btn-primary" id="ix-wa" href="#" target="_blank" rel="noopener">Send on WhatsApp</a>
+          <a class="btn-secondary" id="ix-mail" href="#">Send by email</a>
+          <button type="button" class="btn-secondary" onclick="ixCopy()">Copy text</button>
+          <button type="button" class="btn-secondary" onclick="ixReset()">New enquiry</button>
+        </div>
+        <p id="ix-note" style="margin-top:14px;font-size:11px;color:var(--dimmer)"></p>
       </div>
     </div>
   </div>
@@ -1197,6 +1436,152 @@ function requestStatusOnWA(){
 function quoteFor(label){
   switchPortal('diagnose');
   document.getElementById('contact').scrollIntoView({behavior:'smooth'});
+}
+
+/* ===== HARDWARE QUOTATION REQUEST (added) ===== */
+var hwText='';
+function hwVal(id){return (document.getElementById(id).value||'').replace(/[\u0000-\u0008\u000B-\u001F]/g,'').trim();}
+function hwChecked(sel){return Array.prototype.map.call(document.querySelectorAll(sel+' input:checked'),function(i){return i.value;});}
+function hwRef(){var c='ABCDEFGHJKLMNPQRSTUVWXYZ23456789',r='HW-';for(var i=0;i<6;i++)r+=c[Math.floor(Math.random()*c.length)];return r;}
+function hwSubmit(e){
+  e.preventDefault();
+  var err=document.getElementById('hw-err');err.textContent='';
+  var f={org:hwVal('hw-org'),contact:hwVal('hw-contact'),email:hwVal('hw-email'),tel:hwVal('hw-tel'),loc:hwVal('hw-loc'),pref:hwVal('hw-pref'),
+    type:hwVal('hw-type'),qty:hwVal('hw-qty'),make:hwVal('hw-make'),model:hwVal('hw-model'),problem:hwVal('hw-problem'),
+    ram:hwVal('hw-ram'),store:hwVal('hw-store'),want:hwVal('hw-want'),other:hwVal('hw-other')};
+  var needs=hwChecked('#hw-needs'),files=hwChecked('#hw-files'),unknown=document.getElementById('hw-unknown').checked;
+  var q=parseInt(f.qty,10);
+  var msg=null;
+  if(!f.org)msg='Please enter the school or company name.';
+  else if(!f.contact)msg='Please enter a contact person.';
+  else if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(f.email))msg='Please enter a valid email address.';
+  else if(f.tel.replace(/\D/g,'').length<9||/[^0-9+\s()-]/.test(f.tel))msg='Please enter a valid telephone number.';
+  else if(!f.loc)msg='Please enter your location.';
+  else if(!needs.length&&!unknown)msg='Select what you need quoted, or tick the assessment option.';
+  else if(!f.type)msg='Please select the equipment type.';
+  else if(!(q>=1&&q<=1000))msg='Number of machines must be between 1 and 1000.';
+  else if(!f.problem)msg='Please describe the problem or upgrade requirement.';
+  else if(!document.getElementById('hw-consent').checked)msg='Please tick the consent box so we can contact you and prepare a quotation.';
+  if(msg){err.textContent=msg;return false;}
+  var ref=hwRef(),L=[];
+  L.push('HARDWARE QUOTATION REQUEST — '+ref);
+  L.push('');
+  L.push('CLIENT');
+  L.push('Name/Organisation: '+f.org);
+  L.push('Contact person: '+f.contact);
+  L.push('Email: '+f.email);
+  L.push('Phone: '+f.tel);
+  L.push('Location: '+f.loc);
+  L.push('Preferred contact: '+f.pref);
+  L.push('');
+  L.push('REQUEST');
+  L.push('Needs quoted: '+(needs.length?needs.join(', '):'—'));
+  if(unknown)L.push('** Client does not know which component is needed — please assess my requirements. **');
+  L.push('Equipment type: '+f.type);
+  L.push('Number of machines: '+q);
+  L.push('Manufacturer: '+(f.make||'unknown'));
+  L.push('Model: '+(f.model||'unknown'));
+  L.push('Problem / requirement: '+f.problem);
+  if(f.ram)L.push('Existing RAM: '+f.ram);
+  if(f.store)L.push('Existing storage: '+f.store);
+  if(f.want)L.push('Desired upgrade: '+f.want);
+  if(f.other)L.push('Other info: '+f.other);
+  L.push('');
+  L.push('Files I will send separately: '+(files.length?files.join(', '):'none'));
+  L.push('Consent given to be contacted and for my details to be processed for quotation purposes.');
+  hwText=L.join('\n');
+  document.getElementById('hw-ref').textContent=ref;
+  document.getElementById('hw-preview').textContent=hwText;
+  document.getElementById('hw-wa').href='https://wa.me/27651971461?text='+encodeURIComponent(hwText);
+  document.getElementById('hw-mail').href='mailto:pixelprotechsolutions@proton.me?subject='+encodeURIComponent('Hardware quotation request '+ref)+'&body='+encodeURIComponent(hwText);
+  document.getElementById('hw-note').textContent=files.length?'Remember to attach: '+files.join(', ')+' — quote '+ref+' in the message.':'';
+  document.getElementById('hw-form').style.display='none';
+  var r=document.getElementById('hw-result');r.style.display='block';
+  r.scrollIntoView({behavior:'smooth',block:'start'});
+  return false;
+}
+function hwCopy(){
+  var n=document.getElementById('hw-note');
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(hwText).then(function(){n.textContent='Copied to clipboard.';},function(){n.textContent='Could not copy — select the text above and copy it manually.';});
+  }else{n.textContent='Copy is not supported here — select the text above and copy it manually.';}
+}
+function hwReset(){
+  document.getElementById('hw-form').reset();
+  document.getElementById('hw-form').style.display='block';
+  document.getElementById('hw-result').style.display='none';
+  document.getElementById('hw-err').textContent='';
+  hwText='';
+  document.getElementById('hw-quote').scrollIntoView({behavior:'smooth'});
+}
+
+/* ===== INTERNATIONAL TECHNOLOGY ENQUIRY (added) =====
+   INTL_CATALOGUE is intentionally EMPTY. Fill it (from hardware-admin.html > Intl Tech Partners > Catalogue export)
+   only with products PixelProTech has written approval to supply. */
+var INTL_CATALOGUE = [];
+(function(){
+  var box=document.getElementById('ix-catalogue');if(!box)return;
+  if(!INTL_CATALOGUE.length){
+    var d=document.createElement('div');d.className='hw-honest glass';
+    d.textContent='Our approved international product list is being built as supplier relationships are confirmed. Nothing is listed yet — send an enquiry and we will tell you honestly whether we can supply what you need.';
+    box.appendChild(d);return;
+  }
+  var grid=document.createElement('div');grid.className='hw-cats';
+  INTL_CATALOGUE.forEach(function(p){
+    var c=document.createElement('div');c.className='hw-cat glass';c.style.flexDirection='column';c.style.alignItems='flex-start';c.style.gap='6px';
+    var t=document.createElement('strong');t.style.color='var(--white)';t.textContent=p.name||'';c.appendChild(t);
+    var k=document.createElement('span');k.textContent=p.category||'';c.appendChild(k);
+    if(p.desc){var ds=document.createElement('span');ds.textContent=p.desc;c.appendChild(ds);}
+    var pr=[];
+    if(p.setup>0)pr.push('Once-off setup: '+p.currency+' '+Number(p.setup).toFixed(2));
+    if(p.recurring>0)pr.push('Recurring: '+p.currency+' '+Number(p.recurring).toFixed(2)+' / '+(p.period||'period').toLowerCase());
+    var pp=document.createElement('span');pp.style.color='var(--teal)';pp.textContent=pr.length?pr.join(' · '):'Price on quotation';c.appendChild(pp);
+    grid.appendChild(c);
+  });
+  box.appendChild(grid);
+})();
+var ixText='';
+function ixVal(id){return (document.getElementById(id).value||'').replace(/[\u0000-\u0008\u000B-\u001F]/g,'').trim();}
+function ixRef(){var c='ABCDEFGHJKLMNPQRSTUVWXYZ23456789',r='IT-';for(var i=0;i<6;i++)r+=c[Math.floor(Math.random()*c.length)];return r;}
+function ixSubmit(e){
+  e.preventDefault();
+  var err=document.getElementById('ix-err');err.textContent='';
+  var f={org:ixVal('ix-org'),contact:ixVal('ix-contact'),email:ixVal('ix-email'),tel:ixVal('ix-tel'),loc:ixVal('ix-loc'),pref:ixVal('ix-pref'),need:ixVal('ix-need'),scale:ixVal('ix-scale')};
+  var cats=Array.prototype.map.call(document.querySelectorAll('#ix-cats input:checked'),function(i){return i.value;});
+  var msg=null;
+  if(!f.org)msg='Please enter your organisation or name.';
+  else if(!f.contact)msg='Please enter a contact person.';
+  else if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(f.email))msg='Please enter a valid email address.';
+  else if(f.tel.replace(/\D/g,'').length<9||/[^0-9+\s()-]/.test(f.tel))msg='Please enter a valid telephone number.';
+  else if(!f.loc)msg='Please enter your location.';
+  else if(!f.need)msg='Please describe what you need.';
+  else if(!document.getElementById('ix-consent').checked)msg='Please tick the consent box so we can contact you.';
+  if(msg){err.textContent=msg;return false;}
+  var ref=ixRef(),L=[];
+  L.push('INTERNATIONAL TECHNOLOGY ENQUIRY — '+ref);L.push('');
+  L.push('Name/Organisation: '+f.org);L.push('Contact person: '+f.contact);L.push('Email: '+f.email);L.push('Phone: '+f.tel);L.push('Location: '+f.loc);L.push('Preferred contact: '+f.pref);
+  L.push('Interested in: '+(cats.length?cats.join(', '):'not specified'));
+  L.push('Requirement: '+f.need);
+  if(f.scale)L.push('Users / devices: '+f.scale);
+  L.push('');L.push('Consent given to be contacted and for my details to be processed to assess and quote this enquiry.');
+  ixText=L.join('\n');
+  document.getElementById('ix-ref').textContent=ref;
+  document.getElementById('ix-preview').textContent=ixText;
+  document.getElementById('ix-wa').href='https://wa.me/27651971461?text='+encodeURIComponent(ixText);
+  document.getElementById('ix-mail').href='mailto:pixelprotechsolutions@proton.me?subject='+encodeURIComponent('Technology enquiry '+ref)+'&body='+encodeURIComponent(ixText);
+  document.getElementById('ix-form').style.display='none';
+  var r=document.getElementById('ix-result');r.style.display='block';r.scrollIntoView({behavior:'smooth',block:'start'});
+  return false;
+}
+function ixCopy(){
+  var n=document.getElementById('ix-note');
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(ixText).then(function(){n.textContent='Copied to clipboard.';},function(){n.textContent='Could not copy — select the text above and copy it manually.';});}
+  else{n.textContent='Copy is not supported here — select the text above and copy it manually.';}
+}
+function ixReset(){
+  document.getElementById('ix-form').reset();document.getElementById('ix-form').style.display='block';
+  document.getElementById('ix-result').style.display='none';document.getElementById('ix-err').textContent='';ixText='';
+  document.getElementById('ix-quote').scrollIntoView({behavior:'smooth'});
 }
 
 if ('serviceWorker' in navigator) {

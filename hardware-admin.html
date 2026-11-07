@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>PixelProTech — Hardware Operations (Internal)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--black:#050507;--dark:#0a0a0f;--card:#0f0f17;--border:#1a1a2e;--border-lit:#2a2a44;--purple:#7b2fff;--purple-dim:#5a1fd4;--teal:#00d4aa;--white:#f0f0f8;--muted:#8888aa;--dimmer:#4a4a66;--red:#ff6b6b;--amber:#efaa32;--green:#50dc64;--mono:'Space Mono',ui-monospace,monospace;--sans:'Syne',system-ui,sans-serif}
+html{scroll-behavior:smooth}
+body{background:var(--black);color:var(--white);font-family:var(--sans);line-height:1.5;min-height:100vh;background-image:linear-gradient(rgba(123,47,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,170,.03) 1px,transparent 1px);background-size:34px 34px}
+:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+header.top{position:sticky;top:0;z-index:50;background:rgba(5,5,7,.9);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);padding:0 4%}
+.top-in{max-width:1280px;margin:0 auto;display:flex;align-items:center;gap:20px;min-height:60px;flex-wrap:wrap;padding:8px 0}
+.brand{font-weight:800;letter-spacing:2px;font-size:14px;text-transform:uppercase}
+.brand small{display:block;font-family:var(--mono);font-size:9px;letter-spacing:3px;color:var(--purple);font-weight:400}
+nav.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-left:auto}
+.tab{font-family:var(--mono);font-size:11px;letter-spacing:1px;padding:9px 16px;border:1px solid var(--border);border-radius:4px;background:var(--card);color:var(--muted);cursor:pointer}
+.tab.on{border-color:var(--purple);color:var(--purple);background:rgba(123,47,255,.1)}
+main{max-width:1280px;margin:0 auto;padding:28px 4% 80px}
+.banner{font-family:var(--mono);font-size:11px;line-height:1.8;color:var(--amber);border:1px solid rgba(239,170,50,.35);background:rgba(239,170,50,.06);border-radius:6px;padding:12px 16px;margin-bottom:22px}
+.banner b{color:#ffd27a}
+h1{font-size:28px;font-weight:800;letter-spacing:-.8px;margin-bottom:6px}
+h2{font-size:19px;font-weight:800;letter-spacing:-.4px;margin-bottom:12px}
+h3{font-size:15px;font-weight:700;margin-bottom:8px}
+.hud{font-family:var(--mono);font-size:10px;color:var(--teal);letter-spacing:3px;text-transform:uppercase;margin-bottom:8px}
+.sub{font-family:var(--mono);font-size:12px;color:var(--muted);line-height:1.8;max-width:760px}
+.panel{background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,0)),var(--card);border:1px solid var(--border);border-radius:10px;padding:22px;margin-bottom:18px}
+.grid{display:grid;gap:14px}
+.g2{grid-template-columns:repeat(2,1fr)}.g3{grid-template-columns:repeat(3,1fr)}.g4{grid-template-columns:repeat(4,1fr)}
+@media(max-width:900px){.g3,.g4{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.g2,.g3,.g4{grid-template-columns:1fr}}
+.stat{padding:18px;border:1px solid var(--border);border-radius:8px;background:var(--card)}
+.stat .n{font-size:30px;font-weight:800;letter-spacing:-1px;color:var(--teal);line-height:1}
+.stat .n.dim{color:var(--dimmer)}
+.stat .l{font-family:var(--mono);font-size:10px;letter-spacing:1.5px;color:var(--muted);margin-top:8px;text-transform:uppercase}
+.fg{display:flex;flex-direction:column;gap:5px;margin-bottom:12px}
+.fg label{font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:1px;text-transform:uppercase}
+input,select,textarea{background:var(--dark);border:1px solid var(--border);border-radius:4px;padding:10px 12px;font-family:var(--mono);font-size:12px;color:var(--white);width:100%;outline:none}
+input:focus,select:focus,textarea:focus{border-color:var(--purple)}
+textarea{min-height:70px;resize:vertical}
+select option{background:var(--dark)}
+input[type=checkbox]{width:auto;accent-color:#7b2fff}
+.ck{display:flex;gap:8px;align-items:flex-start;font-family:var(--mono);font-size:12px;color:var(--muted);margin-bottom:10px;cursor:pointer}
+button,.btn{font-family:var(--mono);font-size:11px;letter-spacing:1px;padding:10px 16px;border-radius:4px;border:1px solid var(--border);background:transparent;color:var(--white);cursor:pointer;text-decoration:none;display:inline-block}
+button:hover{border-color:var(--teal);color:var(--teal)}
+button.pri{background:var(--purple);border-color:var(--purple);color:#fff}button.pri:hover{background:var(--purple-dim);color:#fff}
+button.sm{padding:6px 10px;font-size:10px}
+button.warn:hover{border-color:var(--red);color:var(--red)}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.sp{flex:1}
+table{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:11px}
+th{text-align:left;color:var(--dimmer);font-weight:400;letter-spacing:1px;text-transform:uppercase;font-size:9px;padding:8px 6px;border-bottom:1px solid var(--border)}
+td{padding:8px 6px;border-bottom:1px solid rgba(255,255,255,.04);vertical-align:top;color:var(--muted)}
+td input,td select{padding:7px 8px;font-size:11px;min-width:70px}
+.tw{overflow-x:auto}
+.badge{display:inline-block;font-family:var(--mono);font-size:9px;letter-spacing:1px;padding:3px 8px;border-radius:2px;border:1px solid var(--border);color:var(--muted);white-space:nowrap}
+.b-teal{color:var(--teal);border-color:rgba(0,212,170,.35);background:rgba(0,212,170,.08)}
+.b-purple{color:var(--purple);border-color:rgba(123,47,255,.4);background:rgba(123,47,255,.1)}
+.b-amber{color:var(--amber);border-color:rgba(239,170,50,.4);background:rgba(239,170,50,.08)}
+.b-red{color:var(--red);border-color:rgba(255,107,107,.4);background:rgba(255,107,107,.08)}
+.b-green{color:var(--green);border-color:rgba(80,220,100,.4);background:rgba(80,220,100,.08)}
+.sub-tabs{display:flex;gap:6px;flex-wrap:wrap;margin:16px 0 20px}
+.msg{font-family:var(--mono);font-size:11px;padding:10px 14px;border-radius:5px;margin:10px 0;line-height:1.7}
+.msg.err{color:var(--red);border:1px solid rgba(255,107,107,.35);background:rgba(255,107,107,.06)}
+.msg.ok{color:var(--teal);border:1px solid rgba(0,212,170,.3);background:rgba(0,212,170,.05)}
+.msg.warn{color:var(--amber);border:1px solid rgba(239,170,50,.35);background:rgba(239,170,50,.06)}
+.empty{font-family:var(--mono);font-size:12px;color:var(--dimmer);text-align:center;padding:32px;border:1px dashed var(--border);border-radius:8px}
+.tot td{color:var(--white)}
+.tot tr.final td{font-size:14px;color:var(--teal);font-weight:700;border-top:1px solid var(--teal)}
+.log{font-family:var(--mono);font-size:10px;color:var(--dimmer);line-height:1.9;max-height:220px;overflow:auto}
+a{color:var(--teal)}
+/* print overlay */
+#printView{display:none}
+#printView.on{display:block;position:fixed;inset:0;z-index:999;background:#e9e9ef;overflow:auto;padding:20px}
+.pbar{max-width:800px;margin:0 auto 14px;display:flex;gap:10px}
+.doc{background:#fff;color:#111;max-width:800px;margin:0 auto;padding:44px 48px;font-family:Arial,Helvetica,sans-serif;font-size:12.5px;line-height:1.55}
+.doc h1{font-family:Arial,sans-serif;font-size:24px;letter-spacing:0;color:#111;margin:0}
+.doc .dh{display:flex;justify-content:space-between;gap:20px;border-bottom:3px solid #7b2fff;padding-bottom:14px;margin-bottom:18px}
+.doc .co{font-size:11px;color:#444;line-height:1.5}
+.doc .co b{font-size:14px;color:#111}
+.doc h4{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:#7b2fff;margin:18px 0 6px;border-bottom:1px solid #ddd;padding-bottom:3px}
+.doc table{font-family:Arial,sans-serif;font-size:12px;margin-bottom:6px}
+.doc th{color:#555;border-bottom:1px solid #999;font-size:10px;padding:5px 4px}
+.doc td{color:#111;border-bottom:1px solid #e4e4e4;padding:5px 4px}
+.doc td.r,.doc th.r{text-align:right}
+.doc .kv{display:grid;grid-template-columns:150px 1fr;gap:3px 12px;margin-bottom:4px}
+.doc .kv span:nth-child(odd){color:#666}
+.doc .grand td{font-weight:700;font-size:14px;border-top:2px solid #111}
+.doc .draft{background:#fff3cd;border:1px solid #e0b100;padding:6px 10px;font-weight:700;margin-bottom:12px}
+.doc .small{font-size:10.5px;color:#555}
+.doc .sig{display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:34px}
+.doc .sig div{border-top:1px solid #111;padding-top:4px;font-size:11px}
+@media print{
+ body{background:#fff!important}
+ body>*:not(#printView){display:none!important}
+ #printView.on{position:static;background:#fff;padding:0;overflow:visible}
+ .pbar{display:none!important}
+ .doc{box-shadow:none;padding:0;max-width:none}
+}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="top-in">
+    <div class="brand">PixelProTech <small>HARDWARE OPERATIONS · INTERNAL</small></div>
+    <nav class="tabs" id="tabs"></nav>
+  </div>
+</header>
+<main id="main"></main>
+<div id="printView"></div>
+
+<script>
+/* =====================================================
+   PixelProTech Hardware Operations — internal tool
+   Local-first: data lives in THIS browser only.
+   ===================================================== */
+var KEY='ppt_hw_ops_v1';
+var STATUSES=['Request received','Assessment required','Awaiting technical information','Sourcing components','Supplier quotations received','Client quotation prepared','Quotation sent','Awaiting client approval','Approved','Payment pending','Payment confirmed','Procurement in progress','Parts received','Delivery scheduled','Installation in progress','Testing in progress','Completed','Cancelled'];
+var SUP_STATUSES=['Lead — not contacted','Contacted','Awaiting response','Verification pending','Verified','Approved for purchasing','Temporarily unavailable','Rejected'];
+var CHECKLIST=[['correct','Confirm correct component'],['compat','Check compatibility'],['serials','Record serial / part numbers where applicable'],['installed','Install component'],['bios','Confirm BIOS/UEFI or operating-system detection (where relevant)'],['boot','Confirm operating-system boot'],['detect','Verify memory / storage detection'],['diag','Run appropriate diagnostics'],['stable','Confirm machine stability'],['faults','Record outstanding faults']];
+var RESULTS=['','Passed','Passed with observations','Failed','Requires further investigation'];
+var WTYPES=['Supplier / manufacturer hardware warranty','PixelProTech installation workmanship','Additional service agreement'];
+var CLAIMS=['No claim','Claim lodged','Under assessment','Accepted','Rejected','Resolved'];
+var GROUPS={
+ open:['Request received','Assessment required','Awaiting technical information','Sourcing components','Supplier quotations received','Client quotation prepared'],
+ await:['Quotation sent','Awaiting client approval'],
+ approved:['Approved','Payment pending','Payment confirmed'],
+ proc:['Procurement in progress','Parts received','Delivery scheduled'],
+ install:['Installation in progress','Testing in progress'],
+ done:['Completed']
+};
+var NEEDS_APPROVAL=['Approved','Payment pending','Payment confirmed','Procurement in progress','Parts received','Delivery scheduled','Installation in progress','Testing in progress','Completed'];
+
+function uid(){return Math.random().toString(36).slice(2,9)+Date.now().toString(36).slice(-3);}
+function today(){return new Date(Date.now()-new Date().getTimezoneOffset()*60000).toISOString().slice(0,10);}
+function nowTs(){return new Date().toISOString();}
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+function r2(n){return Math.round((n+Number.EPSILON)*100)/100;}
+function money(n){return 'R '+Number(n||0).toLocaleString('en-ZA',{minimumFractionDigits:2,maximumFractionDigits:2});}
+function addDays(d,n){var x=new Date(d+'T12:00:00');x.setDate(x.getDate()+n);return x.toISOString().slice(0,10);}
+
+function seedSuppliers(){
+  function mk(name,notes,type){return {id:uid(),name:name,type:type||'Prospective supplier',website:'',contact:'',location:'',brands:'',categories:'',trade:'',pricing:'',stock:'',delivery:'',warranty:'',returns:'',vat:'',status:SUP_STATUSES[0],verified:'',notes:notes,archived:false,created:nowTs()};}
+  return [
+    mk('JLS Computers','Prospective supplier lead. Not a confirmed PixelProTech partner. No details verified yet.'),
+    mk('Service Parts Logistics (SPL)','Prospective supplier lead. Not a confirmed PixelProTech partner. No details verified yet.'),
+    mk('TVR Distribution','Prospective supplier lead. Not a confirmed PixelProTech partner. No details verified yet.'),
+    mk('ASUS South Africa authorised partner directory','BRAND-SPECIFIC VERIFICATION SOURCE — used to check whether a reseller is an authorised ASUS partner. Not automatically a direct supplier.','Verification resource')
+  ];
+}
+function blank(){return {v:1,suppliers:seedSuppliers(),jobs:[],partners:[],offerings:[],customers:[],income:[],ienq:[],audit:[],seq:{quote:0},settings:{vatRegistered:false,vatRate:15,payInstr:'',defPayTerms:'',defValidity:14,defWarranty:'Hardware carries the supplier / manufacturer warranty stated for each item. Installation workmanship terms are stated separately. No warranty beyond the supplier or manufacturer terms is implied.',defExclusions:'Pre-existing faults unrelated to the quoted work; loss of data not caused by PixelProTech; software licences unless itemised; work outside the agreed scope.',technicians:''}};}
+var S=load();
+function norm(o){o.audit=o.audit||[];o.seq=o.seq||{quote:0};['partners','offerings','customers','income','ienq'].forEach(function(k){o[k]=o[k]||[];});o.settings=Object.assign(blank().settings,o.settings||{});return o;}
+function load(){try{var t=localStorage.getItem(KEY);if(t){var o=JSON.parse(t);if(o&&o.jobs&&o.suppliers){return norm(o);}}}catch(e){}return blank();}
+var saveFailed=false;
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S));saveFailed=false;}catch(e){saveFailed=true;alert('WARNING: could not save to this browser (storage full or blocked). Export your data now.');}}
+function audit(action,jobId){S.audit.push({ts:nowTs(),action:action,job:jobId||''});if(S.audit.length>3000)S.audit=S.audit.slice(-3000);}
+
+var ui={tab:'dash',jobId:null,jtab:'overview',filter:'all',q:'',supEdit:null,supShowArch:false,msg:'',itab:'partners',pEdit:null,oEdit:null,cEdit:null,eEdit:null};
+function J(){return S.jobs.find(function(j){return j.id===ui.jobId;});}
+function SUP(id){return S.suppliers.find(function(s){return s.id===id;});}
+function supName(id){var s=SUP(id);return s?s.name:'(none)';}
+
+/* ---------- generic path binding ---------- */
+function setPath(o,path,val){var p=path.split('.');for(var i=0;i<p.length-1;i++){if(o[p[i]]==null)o[p[i]]={};o=o[p[i]];}o[p[p.length-1]]=val;}
+function getPath(o,path){return path.split('.').reduce(function(a,k){return a==null?undefined:a[k];},o);}
+function F(label,scope,path,val,o){o=o||{};
+  var a=' data-scope="'+scope+'" data-f="'+esc(path)+'"'+(o.sid?' data-sid="'+esc(o.sid)+'"':'')+(o.coll?' data-coll="'+o.coll+'"':'')+(o.num?' data-num="1"':'')+(o.after?' data-after="'+o.after+'"':'')+(o.re?' data-re="1"':'');
+  var h='';
+  if(o.type==='textarea')h='<textarea'+a+(o.ph?' placeholder="'+esc(o.ph)+'"':'')+'>'+esc(val)+'</textarea>';
+  else if(o.type==='select'){h='<select'+a+'>'+o.opts.map(function(x){var v=Array.isArray(x)?x[0]:x,l=Array.isArray(x)?x[1]:x;return '<option value="'+esc(v)+'"'+(String(v)===String(val==null?'':val)?' selected':'')+'>'+esc(l)+'</option>';}).join('')+'</select>';}
+  else if(o.type==='checkbox')return '<label class="ck"><input type="checkbox"'+a+(val?' checked':'')+'> <span>'+esc(label)+'</span></label>';
+  else h='<input type="'+(o.type||'text')+'"'+a+' value="'+esc(val)+'"'+(o.num?' step="any" min="0"':'')+(o.ph?' placeholder="'+esc(o.ph)+'"':'')+'>';
+  if(o.bare)return h;
+  return '<div class="fg"><label>'+esc(label)+'</label>'+h+'</div>';
+}
+function JF(label,path,o){var j=J();return F(label,'job',path,getPath(j,path),o);}
+function target(t){var sc=t.dataset.scope;if(sc==='job')return J();if(sc==='set')return S.settings;if(sc==='sup')return SUP(t.dataset.sid);if(sc==='coll')return (S[t.dataset.coll]||[]).find(function(x){return x.id===t.dataset.sid;});return null;}
+
+document.addEventListener('change',function(e){
+  var t=e.target;
+  if(t.dataset&&t.dataset.status){changeStatus(t);return;}
+  if(t.dataset&&t.dataset.pstatus!==undefined){changePartnerStatus(t);return;}
+  if(!t.dataset||t.dataset.f===undefined)return;
+  var o=target(t);if(!o)return;
+  var v=t.type==='checkbox'?t.checked:(t.dataset.num?(parseFloat(t.value)||0):t.value);
+  if(t.dataset.f==='quote.approval'){if(!approvalOk(o,v)){t.value=o.quote.approval;return;}}
+  setPath(o,t.dataset.f,v);
+  if(t.dataset.scope==='job'){o.updated=nowTs();audit('Edited '+t.dataset.f,o.id);}
+  if(t.dataset.scope==='sup'){audit('Edited supplier field '+t.dataset.f+' ('+o.name+')');}
+  if(t.dataset.scope==='coll'){audit('Edited '+t.dataset.coll+' field '+t.dataset.f+(o.name?' ('+o.name+')':''));}
+  save();
+  var a=t.dataset.after;
+  if(a==='quote')refreshQuote();else if(a==='render')render();else if(a==='cmp')render();
+});
+document.addEventListener('click',function(e){
+  var b=e.target.closest('[data-act]');if(!b)return;
+  var act=b.dataset.act,id=b.dataset.id,i=b.dataset.i;
+  (ACTS[act]||function(){})(id,i,b);
+});
+
+/* ---------- status workflow ---------- */
+function gate(j,s){
+  var q=j.quote;
+  if(NEEDS_APPROVAL.indexOf(s)>-1&&!(q&&q.approval==='Approved'))return 'Cannot set "'+s+'": the client quotation has not been recorded as Approved (Quote tab).';
+  if(s==='Payment confirmed'&&!j.payment.confirmed)return 'Cannot set "Payment confirmed": record the confirmed payment (date, reference, amount) on the Procurement tab first.';
+  if(['Procurement in progress','Parts received','Delivery scheduled'].indexOf(s)>-1&&j.payment.requireUpfront&&!j.payment.confirmed)return 'Cannot set "'+s+'": upfront payment is required and not yet confirmed.';
+  if(s==='Completed'){var r=j.install.result;if(r!=='Passed'&&r!=='Passed with observations')return 'Cannot set "Completed": the installation test result must be recorded as Passed or Passed with observations (Installation tab).';}
+  return '';
+}
+function changeStatus(t){
+  var j=J(),s=t.value,m=gate(j,s);
+  if(m){alert(m);t.value=j.status;return;}
+  var note=prompt('Optional note for this status change:','')||'';
+  j.status=s;j.statusLog.push({ts:nowTs(),status:s,note:note});j.updated=nowTs();audit('Status → '+s,j.id);save();render();
+}
+function approvalOk(j,v){
+  var q=j.quote;
+  if(v==='Approved'){
+    if(!q.approvedDate||!q.approvedBy||!q.approvalEvidence){alert('To mark the quotation Approved, first enter the approval date, who approved, and the written evidence reference (e.g. email or WhatsApp message date/ID).');return false;}
+  }
+  return true;
+}
+
+/* ---------- quote calc ---------- */
+function lineCalc(l){
+  var unit=l.cat==='Hardware'?r2((l.cost||0)*(1+(l.markup||0)/100)):(l.price||0);
+  var sell=r2((l.qty||0)*unit),cost=r2((l.qty||0)*(l.cost||0));
+  return {unit:unit,sell:sell,cost:cost};
+}
+function calcQuote(j){
+  var q=j.quote,cats={Hardware:0,Installation:0,Additional:0,Delivery:0},cost=0;
+  q.lines.forEach(function(l){if(l.include===false)return;var c=lineCalc(l);cats[l.cat]=r2((cats[l.cat]||0)+c.sell);cost=r2(cost+c.cost);});
+  var sub=r2(cats.Hardware+cats.Installation+cats.Additional+cats.Delivery);
+  var vat=S.settings.vatRegistered?r2(sub*(S.settings.vatRate||0)/100):0;
+  return {cats:cats,sub:sub,vat:vat,total:r2(sub+vat),cost:cost,margin:r2(sub-cost)};
+}
+function refreshQuote(){
+  var j=J();if(!j||!j.quote)return;
+  var el=document.getElementById('qtotals');if(el)el.innerHTML=quoteTotalsHtml(j);
+  j.quote.lines.forEach(function(l,i){var c=lineCalc(l);var u=document.getElementById('lu'+i),s=document.getElementById('ls'+i);if(u)u.textContent=money(c.unit);if(s)s.textContent=money(c.sell);});
+}
+function quoteTotalsHtml(j){
+  var c=calcQuote(j),v=S.settings.vatRegistered;
+  return '<table class="tot"><tr><td>Hardware</td><td style="text-align:right">'+money(c.cats.Hardware)+'</td></tr><tr><td>Installation</td><td style="text-align:right">'+money(c.cats.Installation)+'</td></tr><tr><td>Additional services</td><td style="text-align:right">'+money(c.cats.Additional)+'</td></tr><tr><td>Delivery</td><td style="text-align:right">'+money(c.cats.Delivery)+'</td></tr><tr><td>Subtotal'+(v?' (excl. VAT)':'')+'</td><td style="text-align:right">'+money(c.sub)+'</td></tr><tr><td>'+(v?'VAT @ '+S.settings.vatRate+'%':'VAT')+'</td><td style="text-align:right">'+(v?money(c.vat):'Not charged (not VAT-registered per settings)')+'</td></tr><tr class="final"><td>FINAL AMOUNT PAYABLE</td><td style="text-align:right">'+money(c.total)+'</td></tr></table>'+
+  '<div class="msg warn" style="margin-top:12px">INTERNAL ONLY — procurement cost '+money(c.cost)+' · recorded margin on this quote '+money(c.margin)+(c.sub?' ('+(c.margin/c.sub*100).toFixed(1)+'%)':'')+'. Not shown on the client document.</div>';
+}
+
+/* ---------- ACTIONS ---------- */
+var ACTS={
+ tab:function(id){ui.tab=id;ui.jobId=null;ui.msg='';render();},
+ jtab:function(id){ui.jtab=id;render();},
+ openjob:function(id){ui.jobId=id;ui.jtab='overview';ui.tab='jobs';render();window.scrollTo(0,0);},
+ closejob:function(){ui.jobId=null;render();},
+ newjob:function(){ui.tab='jobs';ui.jobId='__new';render();},
+ createjob:function(){createJob();},
+ parse:function(){parseInto();},
+ setfilter:function(id){ui.filter=id;render();},
+ supnew:function(){var s={id:uid(),name:'New supplier',type:'Prospective supplier',website:'',contact:'',location:'',brands:'',categories:'',trade:'',pricing:'',stock:'',delivery:'',warranty:'',returns:'',vat:'',status:SUP_STATUSES[0],verified:'',notes:'',archived:false,created:nowTs()};S.suppliers.push(s);audit('Added supplier');save();ui.supEdit=s.id;render();},
+ supedit:function(id){ui.supEdit=ui.supEdit===id?null:id;render();},
+ suparch:function(id){var s=SUP(id);s.archived=!s.archived;audit((s.archived?'Archived':'Restored')+' supplier '+s.name);save();render();},
+ suparchshow:function(){ui.supShowArch=!ui.supShowArch;render();},
+ verifytoday:function(id){var s=SUP(id);s.verified=today();audit('Verification date set for '+s.name);save();render();},
+ addcmp:function(){var j=J();j.comparisons.push({id:uid(),component:'',make:'',model:'',partNo:'',compat:'',rows:[],pref:-1,reason:''});audit('Added component to source',j.id);save();render();},
+ addrow:function(id){var j=J(),c=j.comparisons.find(function(x){return x.id===id;});c.rows.push({supplier:'',price:0,vat:'Unknown',stock:'',delivery:0,lead:'',warranty:'',returns:'',ref:'',date:today(),auth:'Unverified'});save();render();},
+ delrow:function(id,i){var j=J(),c=j.comparisons.find(function(x){return x.id===id;});i=+i;c.rows.splice(i,1);if(c.pref===i)c.pref=-1;else if(c.pref>i)c.pref--;audit('Removed supplier quote row',j.id);save();render();},
+ pref:function(id,i){var j=J(),c=j.comparisons.find(function(x){return x.id===id;});i=+i;var r=c.rows[i];
+   if(!r.supplier){alert('Select the supplier for this row first.');return;}
+   if(r.auth==='Unverified'&&!confirm('This quote is marked "Unverified" for authenticity/traceability. Select it as preferred anyway?'))return;
+   c.pref=i;audit('Preferred supplier selected: '+supName(r.supplier),j.id);save();render();},
+ clearpref:function(id){var j=J(),c=j.comparisons.find(function(x){return x.id===id;});c.pref=-1;save();render();},
+ mkquote:function(){var j=J();S.seq.quote++;var y=new Date().getFullYear();j.quote={number:'PPT-Q-'+y+'-'+String(S.seq.quote).padStart(3,'0'),issued:today(),validDays:S.settings.defValidity,scope:'',delivery:'',payTerms:S.settings.defPayTerms,warranty:S.settings.defWarranty,exclusions:S.settings.defExclusions,approval:'Draft',approvedDate:'',approvedBy:'',approvalEvidence:'',lines:[]};audit('Created quotation '+j.quote.number,j.id);save();render();},
+ addline:function(id){var j=J();var cat=id;var base={id:uid(),cat:cat,desc:'',qty:1,cost:0,markup:0,price:0,cond:'Unspecified',include:true};
+   if(cat==='Installation')base.desc='Installation labour';
+   j.quote.lines.push(base);save();render();},
+ addpreset:function(id){var j=J();var map={diag:['Additional','Diagnosis fee',true],mig:['Additional','Data migration (only if client has authorised it)',false],other:['Additional','Other approved project charge',true],deliv:['Delivery','Collection and delivery',true]};var m=map[id];j.quote.lines.push({id:uid(),cat:m[0],desc:m[1],qty:1,cost:0,markup:0,price:0,cond:'Unspecified',include:m[2]});save();render();},
+ pullcmp:function(){var j=J(),n=0;j.comparisons.forEach(function(c){if(c.pref<0)return;var r=c.rows[c.pref];var cost=r.price;if(r.vat==='Incl. VAT'&&S.settings.vatRegistered)cost=r2(r.price/(1+(S.settings.vatRate||0)/100));
+   if(j.quote.lines.some(function(l){return l.src===c.id;}))return;
+   j.quote.lines.push({id:uid(),cat:'Hardware',desc:[c.make,c.model,c.component].filter(Boolean).join(' ')+(c.partNo?' (P/N '+c.partNo+')':''),qty:j.equip.qty||1,cost:cost,markup:0,price:0,cond:r.auth==='Genuine / traceable'?'Genuine / traceable':(r.auth==='Compatible alternative'?'Compatible alternative':'Unspecified'),include:true,src:c.id});n++;});
+   if(!n)alert('No new preferred components to pull. Select a preferred supplier on the Sourcing tab first (already-pulled components are skipped).');
+   else{audit('Pulled '+n+' preferred component(s) into quote',j.id);}
+   save();render();},
+ delline:function(id,i){var j=J();j.quote.lines.splice(+i,1);save();render();},
+ printquote:function(){printQuote();},
+ addorder:function(){addOrder();},
+ recpay:function(){recordPayment();},
+ clearpay:function(){var j=J();if(!confirm('Un-confirm this payment record? (It stays in the audit log.)'))return;j.payment.confirmed=false;audit('Payment confirmation withdrawn',j.id);save();render();},
+ addev:function(){var j=J();j.install.evidence.push({desc:'',file:''});save();render();},
+ addwar:function(){var j=J();j.warranties.push({id:uid(),component:'',type:WTYPES[0],supplier:'',purchase:'',installDate:j.install.date||'',months:0,supRef:'',handover:'',claim:CLAIMS[0]});audit('Added warranty record',j.id);save();render();},
+ report:function(){printReport();},
+ closeprint:function(){document.getElementById('printView').className='';document.getElementById('printView').innerHTML='';},
+ doprint:function(){window.print();},
+ itab:function(id){ui.itab=id;render();},
+ padd:function(){var p={id:uid(),name:'New partner lead',country:'',website:'',category:ICATS[0],programmeUrl:'',model:IMODELS[0],saElig:'Unknown',saSource:'',status:PSTATUSES[0],appDate:'',approvedDate:'',approvalEvidence:'',commission:'',commBasis:'Unknown',commSource:'',recurring:'',recBasis:'Unknown',recSource:'',payCurrency:'',payMethod:'',payMin:'',conditions:'',certs:'',support:'',verified:'',notes:'',corr:[],created:nowTs()};S.partners.push(p);audit('Added partner lead');save();ui.pEdit=p.id;render();},
+ pedit:function(id){ui.pEdit=ui.pEdit===id?null:id;render();},
+ pverify:function(id){var p=pById(id);p.verified=today();audit('Partner verification date set: '+p.name);save();render();},
+ pcorr:function(id){var p=pById(id);p.corr.push({date:today(),type:'Email',summary:'',ref:''});save();render();},
+ oadd:function(){var ok=S.partners.filter(partnerLive);if(!ok.length){alert('Offerings can only be created for a partner with status Approved or Active partner (with written approval recorded).');return;}var o={id:uid(),partnerId:ok[0].id,name:'',category:ICATS[0],desc:'',currency:'ZAR',setup:0,recurring:0,period:'Monthly',terms:'',listed:false,created:nowTs()};S.offerings.push(o);audit('Added offering');save();ui.oEdit=o.id;render();},
+ oedit:function(id){ui.oEdit=ui.oEdit===id?null:id;render();},
+ cadd:function(){if(!S.offerings.length){alert('Create an offering first (Catalogue tab).');return;}var c={id:uid(),name:'',contact:'',email:'',tel:'',offeringId:S.offerings[0].id,status:'Quoted',start:'',period:'Monthly',renewal:'',currency:'ZAR',setupCharged:0,recurringAmount:0,notes:'',created:nowTs()};S.customers.push(c);audit('Added customer subscription record');save();ui.cEdit=c.id;render();},
+ cedit:function(id){ui.cEdit=ui.cEdit===id?null:id;render();},
+ iadd:function(){var d=today();S.income.push({id:uid(),date:d,partnerId:'',type:'Commission',amount:0,currency:'ZAR',ref:'',notes:''});audit('Added income entry');save();render();},
+ eadd:function(){var e={id:uid(),ref:genIRef(),created:nowTs(),name:'',contact:'',email:'',tel:'',loc:'',cats:'',need:'',scale:'',status:'New',notes:''};S.ienq.unshift(e);audit('Added international enquiry '+e.ref);save();ui.eEdit=e.id;render();},
+ eparse:function(){parseIEnq();},
+ eedit:function(id){ui.eEdit=ui.eEdit===id?null:id;render();},
+ export:function(){exportData();},
+ import:function(){document.getElementById('impfile').click();}
+};
+
+/* ---------- create job / parse ---------- */
+function newJobObj(ref){return {id:uid(),ref:ref,created:nowTs(),updated:nowTs(),status:STATUSES[0],statusLog:[{ts:nowTs(),status:STATUSES[0],note:'Job created'}],client:{org:'',contact:'',email:'',tel:'',loc:'',pref:''},equip:{type:'',qty:1,make:'',model:'',problem:'',ram:'',store:'',want:'',other:'',unknown:false,needs:'',files:''},notes:'',comparisons:[],quote:null,payment:{terms:'',requireUpfront:true,confirmed:false,date:'',ref:'',amount:0,method:'',instr:''},orders:[],install:{tech:'',date:'',site:'',equipId:'',parts:'',checklist:{},serials:'',outstanding:'',result:'',notes:'',evidence:[],completed:''},warranties:[]};}
+function genRef(){var c='ABCDEFGHJKLMNPQRSTUVWXYZ23456789',r='HW-';for(var i=0;i<6;i++)r+=c[Math.floor(Math.random()*c.length)];return r;}
+function parseInto(){
+  var t=document.getElementById('rawreq').value;var out=document.getElementById('parsemsg');
+  if(!t.trim()){out.innerHTML='<div class="msg err">Paste the request text first.</div>';return;}
+  function g(label){var m=t.match(new RegExp('^'+label.replace(/[.*+?^${}()|[\]\\\/]/g,'\\$&')+'\\s*(.*)$','m'));return m?m[1].trim():'';}
+  var rm=t.match(/(HW-[A-Z0-9]{6})/);var ref=rm?rm[1]:genRef();
+  if(S.jobs.some(function(x){return x.ref===ref;})){out.innerHTML='<div class="msg err">A job with reference '+esc(ref)+' already exists.</div>';return;}
+  var j=newJobObj(ref);
+  j.client={org:g('Name/Organisation:'),contact:g('Contact person:'),email:g('Email:'),tel:g('Phone:'),loc:g('Location:'),pref:g('Preferred contact:')};
+  var needs=g('Needs quoted:');
+  j.equip={type:g('Equipment type:'),qty:parseInt(g('Number of machines:'),10)||1,make:g('Manufacturer:'),model:g('Model:'),problem:g('Problem / requirement:'),ram:g('Existing RAM:'),store:g('Existing storage:'),want:g('Desired upgrade:'),other:g('Other info:'),unknown:/Client does not know which component/.test(t),needs:needs==='—'?'':needs,files:g('Files I will send separately:')};
+  if(j.equip.unknown){j.status='Assessment required';j.statusLog.push({ts:nowTs(),status:j.status,note:'Client asked for requirements assessment'});}
+  j.notes='Imported from client request text on '+today()+'.';
+  S.jobs.unshift(j);audit('Job created from pasted request '+ref,j.id);save();ui.jobId=j.id;ui.jtab='overview';render();
+}
+function createJob(){
+  var org=(document.getElementById('nj-org').value||'').trim();
+  if(!org){document.getElementById('parsemsg').innerHTML='<div class="msg err">Enter at least a client name.</div>';return;}
+  var j=newJobObj(genRef());j.client.org=org;j.client.contact=(document.getElementById('nj-contact').value||'').trim();j.client.tel=(document.getElementById('nj-tel').value||'').trim();
+  S.jobs.unshift(j);audit('Job created manually '+j.ref,j.id);save();ui.jobId=j.id;ui.jtab='overview';render();
+}
+
+/* ---------- procurement ---------- */
+function recordPayment(){
+  var j=J(),d=document.getElementById('pay-date').value,r=document.getElementById('pay-ref').value.trim(),a=parseFloat(document.getElementById('pay-amt').value),m=document.getElementById('pay-method').value.trim();
+  if(!d||!r||!(a>0)){alert('To confirm payment you must enter the date received, a payment reference (bank/EFT/receipt reference) and the amount actually received. Payment is never marked received without these.');return;}
+  j.payment.confirmed=true;j.payment.date=d;j.payment.ref=r;j.payment.amount=a;j.payment.method=m;audit('Payment confirmed '+money(a)+' ref '+r,j.id);save();render();
+}
+function addOrder(){
+  var j=J(),q=j.quote;
+  if(!q||q.approval!=='Approved'){alert('Blocked: no supplier order may be recorded until the client quotation is Approved.');return;}
+  if(j.payment.requireUpfront&&!j.payment.confirmed){alert('Blocked: upfront payment is required for this job and has not been confirmed. Record the confirmed payment first (or switch off "upfront payment required" for this job if different terms were agreed in writing).');return;}
+  var sid=document.getElementById('ord-sup').value;
+  if(!sid){alert('Select a supplier.');return;}
+  var s=SUP(sid);
+  if(s.status!=='Approved for purchasing'){alert('Blocked: supplier "'+s.name+'" has status "'+s.status+'". Only suppliers with status "Approved for purchasing" can receive orders. Update the supplier record first.');return;}
+  j.orders.push({id:uid(),supplier:sid,orderRef:'',invoiceRef:'',date:today(),cost:0,expected:'',status:'Ordered',receivedDate:'',received:''});
+  audit('Supplier order started with '+s.name,j.id);save();render();
+}
+
+/* ---------- export / import ---------- */
+function exportData(){
+  var blob=new Blob([JSON.stringify(S,null,2)],{type:'application/json'});var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='pixelprotech-hardware-ops-'+today()+'.json';document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},500);
+  audit('Exported data');save();
+}
+function importData(file){
+  var r=new FileReader();r.onload=function(){
+    try{var o=JSON.parse(r.result);if(!o||!Array.isArray(o.jobs)||!Array.isArray(o.suppliers))throw new Error('Not a valid export file.');
+      if(!confirm('Import will REPLACE the data in this browser with the file contents ('+o.jobs.length+' jobs, '+o.suppliers.length+' suppliers). A copy of the current data is kept in this browser as a safety backup. Continue?'))return;
+      try{localStorage.setItem(KEY+'_prev',JSON.stringify(S));}catch(e){}
+      S=norm(o);audit('Imported data');save();render();alert('Import complete.');
+    }catch(e){alert('Import failed: '+e.message);}
+  };r.readAsText(file);
+}
+
+/* ---------- rendering ---------- */
+function statusBadge(s){var c='';if(s==='Completed')c='b-green';else if(s==='Cancelled')c='b-red';else if(GROUPS.install.indexOf(s)>-1||GROUPS.proc.indexOf(s)>-1)c='b-amber';else if(GROUPS.approved.indexOf(s)>-1)c='b-teal';else c='b-purple';return '<span class="badge '+c+'">'+esc(s)+'</span>';}
+function render(){
+  var tabs=[['dash','DASHBOARD'],['jobs','JOBS'],['sup','SUPPLIERS'],['war','WARRANTY REGISTER'],['intl','INTL TECH PARTNERS'],['set','SETTINGS & DATA']];
+  document.getElementById('tabs').innerHTML=tabs.map(function(t){return '<button class="tab'+(ui.tab===t[0]?' on':'')+'" data-act="tab" data-id="'+t[0]+'">'+t[1]+'</button>';}).join('');
+  var m=document.getElementById('main'),h='<div class="banner"><b>Local-only data.</b> Everything on this page is stored in this browser on this device — it is not a central database and is not backed up. Export regularly (Settings &amp; Data). Anyone who can open this web page can see the tool, but not your data.</div>';
+  if(ui.tab==='dash')h+=vDash();else if(ui.tab==='jobs')h+=(ui.jobId?(ui.jobId==='__new'?vNew():vJob()):vJobs());else if(ui.tab==='sup')h+=vSup();else if(ui.tab==='war')h+=vWar();else if(ui.tab==='intl')h+=vIntl();else h+=vSet();
+  m.innerHTML=h;
+}
+function count(group){return S.jobs.filter(function(j){return GROUPS[group].indexOf(j.status)>-1;}).length;}
+function vDash(){
+  var n=S.jobs.length,rev=0,cost=0,paidJobs=0;
+  S.jobs.forEach(function(j){if(j.payment.confirmed){rev=r2(rev+(j.payment.amount||0));paidJobs++;}j.orders.forEach(function(o){cost=r2(cost+(o.cost||0));});});
+  function st(v,l){return '<div class="stat"><div class="n'+(v===0?' dim':'')+'">'+v+'</div><div class="l">'+l+'</div></div>';}
+  function mo(v,l,has){return '<div class="stat"><div class="n'+(has?'':' dim')+'">'+(has?money(v):'—')+'</div><div class="l">'+l+'</div></div>';}
+  var h='<div class="hud">// Hardware supply &amp; installation</div><h1>Operations dashboard</h1><p class="sub">Figures below are counted from records you have entered. Nothing is estimated or pre-filled.</p><div style="height:18px"></div>';
+  if(!n)h+='<div class="empty">No hardware jobs recorded yet. Create one from the Jobs tab, or paste a request generated by the website form.</div><div style="height:18px"></div>';
+  h+='<div class="grid g4">'+st(count('open'),'Open quotation requests')+st(count('await'),'Quotations awaiting approval')+st(count('approved'),'Approved jobs')+st(count('proc'),'Procurement in progress')+st(count('install'),'Installations awaiting completion')+st(count('done'),'Completed jobs')+mo(rev,'Recorded revenue (confirmed payments)',paidJobs>0)+mo(cost,'Recorded supplier costs',S.jobs.some(function(j){return j.orders.some(function(o){return o.cost>0;});}))+'</div>';
+  var mj=S.jobs.filter(function(j){return j.payment.confirmed&&j.orders.some(function(o){return o.cost>0;});});
+  var mr=0,mc=0;mj.forEach(function(j){mr+=j.payment.amount||0;j.orders.forEach(function(o){mc+=o.cost||0;});});
+  h+='<div style="height:14px"></div><div class="grid g2"><div class="stat"><div class="n'+(mj.length?'':' dim')+'">'+(mj.length?money(r2(mr-mc)):'—')+'</div><div class="l">Recorded gross margin '+(mj.length?'('+mj.length+' job(s) with both payment and cost recorded; includes VAT in payment if charged)':'(needs a job with confirmed payment and recorded supplier cost)')+'</div></div><div class="stat"><div class="n'+(S.suppliers.filter(function(s){return s.status==='Approved for purchasing'&&!s.archived;}).length?'':' dim')+'">'+S.suppliers.filter(function(s){return s.status==='Approved for purchasing'&&!s.archived;}).length+'</div><div class="l">Suppliers approved for purchasing (of '+S.suppliers.filter(function(s){return !s.archived;}).length+' active)</div></div></div>';
+  var t0=today(),due=S.customers.filter(function(c){return c.status==='Active'&&c.renewal&&c.renewal<=addDays(t0,60);}).length;
+  var live=S.partners.filter(partnerLive).length;
+  h+='<div style="height:14px"></div><div class="hud">// Channel B — international technology</div><div class="grid g4"><div class="stat"><div class="n'+(S.partners.length?'':' dim')+'">'+S.partners.length+'</div><div class="l">Partner leads registered</div></div><div class="stat"><div class="n'+(live?'':' dim')+'">'+live+'</div><div class="l">Approved / active partners (written approval)</div></div><div class="stat"><div class="n'+(S.customers.filter(function(c){return c.status==='Active';}).length?'':' dim')+'">'+S.customers.filter(function(c){return c.status==='Active';}).length+'</div><div class="l">Active customer subscriptions</div></div><div class="stat"><div class="n'+(due?'':' dim')+'">'+due+'</div><div class="l">Renewals due within 60 days / overdue</div></div></div>';
+  return h;
+}
+function vJobs(){
+  var h='<div class="row"><div><div class="hud">// Enquiries &amp; jobs</div><h1>Jobs</h1></div><div class="sp"></div><button class="pri" data-act="newjob">+ NEW JOB / PASTE REQUEST</button></div>';
+  var fl=[['all','All'],['open','Open'],['await','Awaiting approval'],['approved','Approved'],['proc','Procurement'],['install','Installation'],['done','Completed']];
+  h+='<div class="sub-tabs">'+fl.map(function(f){return '<button class="tab'+(ui.filter===f[0]?' on':'')+'" data-act="setfilter" data-id="'+f[0]+'">'+f[1]+'</button>';}).join('')+'</div>';
+  var list=S.jobs.filter(function(j){return ui.filter==='all'||GROUPS[ui.filter].indexOf(j.status)>-1;});
+  if(!list.length)return h+'<div class="empty">No jobs'+(ui.filter==='all'?' yet.':' in this stage.')+'</div>';
+  h+='<div class="panel tw"><table><tr><th>Ref</th><th>Client</th><th>Equipment</th><th>Status</th><th>Created</th><th></th></tr>'+list.map(function(j){return '<tr><td style="color:var(--purple)">'+esc(j.ref)+'</td><td>'+esc(j.client.org||'—')+'<br><span style="color:var(--dimmer)">'+esc(j.client.loc)+'</span></td><td>'+esc((j.equip.qty||1)+' × '+(j.equip.type||'?'))+(j.equip.unknown?' <span class="badge b-teal">ASSESS</span>':'')+'</td><td>'+statusBadge(j.status)+'</td><td>'+esc(j.created.slice(0,10))+'</td><td><button class="sm" data-act="openjob" data-id="'+j.id+'">OPEN</button></td></tr>';}).join('')+'</table></div>';
+  return h;
+}
+function vNew(){
+  return '<div class="row"><button class="sm" data-act="closejob">← BACK</button></div><div style="height:12px"></div><div class="hud">// New job</div><h1>Create a job</h1><div id="parsemsg"></div>'+
+  '<div class="panel"><h3>Option A — paste a request from the website form</h3><p class="sub" style="margin-bottom:12px">When a client submits the website form, the request arrives to you on WhatsApp or email as text. Paste it here to create the job automatically.</p><textarea id="rawreq" style="min-height:180px" placeholder="HARDWARE QUOTATION REQUEST — HW-XXXXXX …"></textarea><div style="height:10px"></div><button class="pri" data-act="parse">CREATE JOB FROM PASTED REQUEST</button></div>'+
+  '<div class="panel"><h3>Option B — enter manually</h3><div class="grid g3"><div class="fg"><label>Client / organisation *</label><input id="nj-org"></div><div class="fg"><label>Contact person</label><input id="nj-contact"></div><div class="fg"><label>Telephone</label><input id="nj-tel"></div></div><button data-act="createjob">CREATE EMPTY JOB</button></div>';
+}
+function vJob(){
+  var j=J();if(!j){ui.jobId=null;return vJobs();}
+  var tabs=[['overview','OVERVIEW'],['sourcing','SOURCING'],['quote','QUOTE'],['proc','PAYMENT & PROCUREMENT'],['install','INSTALLATION & TESTING'],['warranty','WARRANTY']];
+  var h='<div class="row"><button class="sm" data-act="closejob">← ALL JOBS</button><div class="sp"></div>'+statusBadge(j.status)+'</div><div style="height:10px"></div><div class="hud">// Job</div><h1>'+esc(j.ref)+' · '+esc(j.client.org||'Unnamed client')+'</h1>';
+  h+='<div class="sub-tabs">'+tabs.map(function(t){return '<button class="tab'+(ui.jtab===t[0]?' on':'')+'" data-act="jtab" data-id="'+t[0]+'">'+t[1]+'</button>';}).join('')+'</div>';
+  var f={overview:tOverview,sourcing:tSourcing,quote:tQuote,proc:tProc,install:tInstall,warranty:tWarranty}[ui.jtab];
+  return h+f(j);
+}
+function tOverview(j){
+  var h='<div class="panel"><h2>Status</h2><div class="row"><select data-status="1" style="max-width:340px">'+STATUSES.map(function(s){return '<option'+(s===j.status?' selected':'')+'>'+esc(s)+'</option>';}).join('')+'</select></div><p class="sub" style="margin-top:10px">Some statuses are locked until real conditions are met (approved quote, confirmed payment, passed test).</p><div class="log" style="margin-top:12px">'+j.statusLog.slice().reverse().map(function(l){return esc(l.ts.slice(0,16).replace('T',' '))+' — '+esc(l.status)+(l.note?' — '+esc(l.note):'');}).join('<br>')+'</div></div>';
+  h+='<div class="panel"><h2>Client</h2><div class="grid g3">'+JF('Organisation','client.org')+JF('Contact person','client.contact')+JF('Email','client.email')+JF('Telephone','client.tel')+JF('Location','client.loc')+JF('Preferred contact','client.pref')+'</div></div>';
+  h+='<div class="panel"><h2>Equipment & requirement</h2><div class="grid g3">'+JF('Equipment type','equip.type')+JF('Number of machines','equip.qty',{num:1,type:'number'})+JF('Needs quoted','equip.needs')+JF('Manufacturer','equip.make')+JF('Model','equip.model')+JF('Existing RAM','equip.ram')+JF('Existing storage','equip.store')+JF('Desired upgrade','equip.want')+JF('Files client said they will send','equip.files')+'</div>'+JF('Client does not know the component — assessment required','equip.unknown',{type:'checkbox'})+JF('Problem / requirement','equip.problem',{type:'textarea'})+JF('Other technical information','equip.other',{type:'textarea'})+JF('Internal notes (never shown to client)','notes',{type:'textarea'})+'</div>';
+  h+='<div class="panel"><h2>Audit trail (this job)</h2><div class="log">'+S.audit.filter(function(a){return a.job===j.id;}).slice().reverse().map(function(a){return esc(a.ts.slice(0,16).replace('T',' '))+' — '+esc(a.action);}).join('<br>')+'</div></div>';
+  return h;
+}
+function tSourcing(j){
+  var h='<div class="row"><div><h2>Component sourcing & supplier comparison</h2><p class="sub">Enter only prices from real supplier quotations. The cheapest row is flagged for reference — it is never selected for you.</p></div><div class="sp"></div><button class="pri" data-act="addcmp">+ ADD COMPONENT</button></div><div style="height:12px"></div>';
+  if(!j.comparisons.length)return h+'<div class="empty">No components added yet.</div>';
+  var sups=S.suppliers.filter(function(s){return !s.archived;});
+  j.comparisons.forEach(function(c,ci){
+    var base='comparisons.'+ci;
+    var cheapest=-1,min=Infinity;c.rows.forEach(function(r,i){if(r.price>0&&r.price<min){min=r.price;cheapest=i;}});
+    h+='<div class="panel"><div class="grid g3">'+F('Component description','job',base+'.component',c.component)+F('Manufacturer','job',base+'.make',c.make)+F('Model','job',base+'.model',c.model)+F('Part number','job',base+'.partNo',c.partNo)+'</div>'+F('Compatibility information','job',base+'.compat',c.compat,{type:'textarea'});
+    if(c.rows.length){
+      h+='<div class="tw"><table><tr><th>Preferred</th><th>Supplier</th><th>Price</th><th>VAT</th><th>Authenticity</th><th>Stock</th><th>Delivery cost</th><th>Lead time</th><th>Warranty</th><th>Returns</th><th>Quote ref</th><th>Date</th><th></th></tr>';
+      c.rows.forEach(function(r,i){
+        var rb=base+'.rows.'+i;
+        var opts=[['','Select…']].concat(S.suppliers.filter(function(s){return !s.archived||s.id===r.supplier;}).map(function(s){return [s.id,s.name];}));
+        var st=r.supplier?SUP(r.supplier):null;
+        h+='<tr><td>'+(c.pref===i?'<span class="badge b-green">PREFERRED</span><br><button class="sm" data-act="clearpref" data-id="'+c.id+'">CLEAR</button>':'<button class="sm" data-act="pref" data-id="'+c.id+'" data-i="'+i+'">SELECT</button>')+(i===cheapest?'<br><span class="badge b-amber">LOWEST PRICE</span>':'')+'</td>'+
+        '<td>'+F('','job',rb+'.supplier',r.supplier,{type:'select',opts:opts,bare:1,after:'render'})+(st?'<br><span class="badge'+(st.status==='Approved for purchasing'?' b-green':' b-amber')+'">'+esc(st.status)+'</span>':'')+'</td>'+
+        '<td>'+F('','job',rb+'.price',r.price,{num:1,type:'number',bare:1})+'</td>'+
+        '<td>'+F('','job',rb+'.vat',r.vat,{type:'select',opts:['Unknown','Incl. VAT','Excl. VAT','No VAT'],bare:1})+'</td>'+
+        '<td>'+F('','job',rb+'.auth',r.auth,{type:'select',opts:['Unverified','Genuine / traceable','Compatible alternative'],bare:1})+'</td>'+
+        '<td>'+F('','job',rb+'.stock',r.stock,{bare:1,ph:'in stock?'})+'</td>'+
+        '<td>'+F('','job',rb+'.delivery',r.delivery,{num:1,type:'number',bare:1})+'</td>'+
+        '<td>'+F('','job',rb+'.lead',r.lead,{bare:1,ph:'days'})+'</td>'+
+        '<td>'+F('','job',rb+'.warranty',r.warranty,{bare:1,ph:'period'})+'</td>'+
+        '<td>'+F('','job',rb+'.returns',r.returns,{bare:1})+'</td>'+
+        '<td>'+F('','job',rb+'.ref',r.ref,{bare:1})+'</td>'+
+        '<td>'+F('','job',rb+'.date',r.date,{type:'date',bare:1})+'</td>'+
+        '<td><button class="sm warn" data-act="delrow" data-id="'+c.id+'" data-i="'+i+'">✕</button></td></tr>';
+      });
+      h+='</table></div>';
+      if(c.pref>-1&&c.rows[c.pref]){
+        var pr=c.rows[c.pref],ps=SUP(pr.supplier);
+        if(c.pref!==cheapest&&cheapest>-1)h+='<div class="msg warn">Preferred supplier is not the lowest price. Record the reason below (authenticity, warranty, delivery, compatibility).</div>';
+        if(ps&&ps.status!=='Approved for purchasing')h+='<div class="msg warn">Preferred supplier status is "'+esc(ps.status)+'" — it must be "Approved for purchasing" before an order can be placed.</div>';
+      }
+      h+=F('Reason for preferred supplier choice','job',base+'.reason',c.reason,{type:'textarea'});
+    }
+    h+='<button class="sm" data-act="addrow" data-id="'+c.id+'">+ ADD SUPPLIER QUOTE</button>';
+    h+='</div>';
+  });
+  return h;
+}
+function tQuote(j){
+  var q=j.quote;
+  if(!q)return '<div class="panel"><h2>Quotation</h2><p class="sub" style="margin-bottom:14px">No client quotation prepared for this job yet.</p><button class="pri" data-act="mkquote">CREATE QUOTATION</button></div>';
+  var h='<div class="panel"><div class="row"><div><h2>Quotation '+esc(q.number)+'</h2><p class="sub">Hardware price = your cost × (1 + markup%). Other lines are priced directly. Markup and rates are yours to set per line.</p></div><div class="sp"></div><button data-act="printquote">PREVIEW / PRINT CLIENT PDF</button></div></div>';
+  h+='<div class="panel"><div class="grid g4">'+JF('Date issued','quote.issued',{type:'date'})+JF('Valid for (days)','quote.validDays',{num:1,type:'number'})+JF('Estimated delivery time','quote.delivery',{ph:'confirm from supplier lead time'})+JF('Approval status','quote.approval',{type:'select',opts:['Draft','Sent','Approved','Declined','Expired'],after:'render'})+'</div>';
+  h+='<div class="grid g3">'+JF('Approval date','quote.approvedDate',{type:'date'})+JF('Approved by (name)','quote.approvedBy')+JF('Written approval evidence reference','quote.approvalEvidence',{ph:'e.g. email 12 Nov / WhatsApp ref'})+'</div></div>';
+  h+='<div class="panel"><div class="row"><h2>Line items</h2><div class="sp"></div><button class="sm" data-act="pullcmp">PULL PREFERRED COMPONENTS</button><button class="sm" data-act="addline" data-id="Hardware">+ HARDWARE</button><button class="sm" data-act="addline" data-id="Installation">+ INSTALLATION</button><button class="sm" data-act="addpreset" data-id="diag">+ DIAGNOSIS</button><button class="sm" data-act="addpreset" data-id="mig">+ DATA MIGRATION</button><button class="sm" data-act="addpreset" data-id="deliv">+ DELIVERY</button><button class="sm" data-act="addpreset" data-id="other">+ OTHER</button></div>';
+  if(!q.lines.length)h+='<div class="empty" style="margin-top:12px">No lines yet.</div>';
+  else{
+    h+='<div class="tw"><table><tr><th>Incl.</th><th>Category</th><th>Description</th><th>Condition</th><th>Qty</th><th>Your cost (internal)</th><th>Markup %</th><th>Unit price</th><th>Line total</th><th></th></tr>';
+    q.lines.forEach(function(l,i){var b='quote.lines.'+i,c=lineCalc(l),hw=l.cat==='Hardware';
+      h+='<tr><td>'+F('','job',b+'.include',l.include!==false,{type:'checkbox',after:'quote'}).replace('<label class="ck">','<label class="ck" style="margin:0">')+'</td><td>'+esc(l.cat)+'</td><td style="min-width:200px">'+F('','job',b+'.desc',l.desc,{bare:1})+'</td><td>'+(hw?F('','job',b+'.cond',l.cond,{type:'select',opts:['Unspecified','Genuine / traceable','Compatible alternative'],bare:1}):'—')+'</td><td style="width:70px">'+F('','job',b+'.qty',l.qty,{num:1,type:'number',after:'quote',bare:1})+'</td><td>'+F('','job',b+'.cost',l.cost,{num:1,type:'number',after:'quote',bare:1})+'</td><td>'+(hw?F('','job',b+'.markup',l.markup,{num:1,type:'number',after:'quote',bare:1}):'—')+'</td><td>'+(hw?'<span id="lu'+i+'">'+money(c.unit)+'</span>':F('','job',b+'.price',l.price,{num:1,type:'number',after:'quote',bare:1}))+'</td><td id="ls'+i+'">'+money(c.sell)+'</td><td><button class="sm warn" data-act="delline" data-i="'+i+'">✕</button></td></tr>';});
+    h+='</table></div>';
+  }
+  h+='<div style="height:16px"></div><div id="qtotals">'+quoteTotalsHtml(j)+'</div></div>';
+  h+='<div class="panel"><h2>Terms shown to client</h2>'+JF('Scope of work','quote.scope',{type:'textarea',ph:'What will be supplied, installed and tested'})+JF('Payment terms','quote.payTerms',{type:'textarea',ph:'e.g. deposit/EFT before ordering — enter what was actually agreed'})+JF('Warranty information','quote.warranty',{type:'textarea'})+JF('Exclusions and conditions','quote.exclusions',{type:'textarea'})+'</div>';
+  return h;
+}
+function tProc(j){
+  var p=j.payment,h='<div class="panel"><h2>Payment control</h2><p class="sub" style="margin-bottom:12px">Payment is only marked received when you enter the date, reference and amount actually received. No payment gateway is simulated; payment instructions come from Settings.</p><div class="grid g2">'+JF('Payment terms agreed for this job','payment.terms',{type:'textarea'})+'<div>'+JF('Upfront payment required before purchasing','payment.requireUpfront',{type:'checkbox'})+(S.settings.payInstr?'<div class="msg ok">Payment instructions (from Settings): '+esc(S.settings.payInstr)+'</div>':'<div class="msg warn">No payment instructions set yet — add them in Settings.</div>')+'</div></div>';
+  if(p.confirmed)h+='<div class="msg ok">Payment confirmed: '+money(p.amount)+' on '+esc(p.date)+' · ref '+esc(p.ref)+(p.method?' · '+esc(p.method):'')+'</div><button class="sm warn" data-act="clearpay">WITHDRAW CONFIRMATION</button>';
+  else h+='<div class="grid g4"><div class="fg"><label>Date received</label><input type="date" id="pay-date"></div><div class="fg"><label>Reference</label><input id="pay-ref"></div><div class="fg"><label>Amount received (R)</label><input type="number" id="pay-amt" step="any" min="0"></div><div class="fg"><label>Method</label><input id="pay-method" placeholder="EFT / cash / card"></div></div><button class="pri" data-act="recpay">CONFIRM PAYMENT RECEIVED</button>';
+  h+='</div>';
+  h+='<div class="panel"><div class="row"><div><h2>Supplier orders & delivery</h2><p class="sub">Orders are blocked until the quote is Approved, payment is confirmed (if upfront), and the supplier is "Approved for purchasing".</p></div><div class="sp"></div><select id="ord-sup" style="max-width:260px"><option value="">Supplier…</option>'+S.suppliers.filter(function(s){return !s.archived;}).map(function(s){return '<option value="'+s.id+'">'+esc(s.name)+'</option>';}).join('')+'</select><button class="pri" data-act="addorder">+ RECORD ORDER</button></div>';
+  if(!j.orders.length)h+='<div class="empty" style="margin-top:12px">No supplier orders recorded.</div>';
+  j.orders.forEach(function(o,i){var b='orders.'+i;
+    h+='<div style="border-top:1px solid var(--border);margin-top:16px;padding-top:14px"><h3>'+esc(supName(o.supplier))+'</h3><div class="grid g4">'+JF('Order reference',b+'.orderRef')+JF('Supplier invoice reference',b+'.invoiceRef')+JF('Order date',b+'.date',{type:'date'})+JF('Invoice total paid (R)',b+'.cost',{num:1,type:'number'})+JF('Expected delivery',b+'.expected',{type:'date'})+JF('Delivery status',b+'.status',{type:'select',opts:['Ordered','In transit','Partially received','Received','Problem / dead on arrival']})+JF('Date received',b+'.receivedDate',{type:'date'})+'</div>'+JF('Components received (descriptions, serials, quantities)',b+'.received',{type:'textarea'})+'</div>';
+  });
+  return h+'</div>';
+}
+function tInstall(j){
+  var I=j.install,h='<div class="panel"><div class="row"><h2>Job information</h2><div class="sp"></div><button data-act="report">COMPLETION REPORT (PREVIEW / PRINT)</button></div><div class="grid g3">'+JF('Technician assigned','install.tech',{ph:'name / ID'})+JF('Scheduled date','install.date',{type:'date'})+JF('Site address','install.site')+JF('Equipment identification (asset tag / serial)','install.equipId')+JF('Parts supplied','install.parts',{ph:'summary of parts installed'})+'</div></div>';
+  h+='<div class="panel"><h2>Installation checklist</h2>';
+  CHECKLIST.forEach(function(c){var k='install.checklist.'+c[0]+'.';var v=I.checklist[c[0]]||{};h+='<div class="grid" style="grid-template-columns:30px 1fr 1.2fr;align-items:start;gap:10px;margin-bottom:6px"><div>'+F('','job',k+'done',!!v.done,{type:'checkbox'})+'</div><div style="font-family:var(--mono);font-size:12px;color:var(--muted);padding-top:2px">'+esc(c[1])+'</div><div>'+F('','job',k+'note',v.note||'',{bare:1,ph:'note / value'})+'</div></div>';});
+  h+='</div><div class="panel"><h2>Test result</h2><p class="sub" style="margin-bottom:12px">Installing a part does not mean the machine is repaired. Record the technician\'s actual test outcome.</p><div class="grid g3">'+JF('Test result','install.result',{type:'select',opts:RESULTS.map(function(r){return [r,r||'— not yet recorded —'];})})+JF('Completion date','install.completed',{type:'date'})+'</div>'+JF('Outstanding issues / faults','install.outstanding',{type:'textarea'})+JF('Technician notes','install.notes',{type:'textarea'})+'</div>';
+  h+='<div class="panel"><div class="row"><h2>Completion evidence</h2><div class="sp"></div><button class="sm" data-act="addev">+ ADD EVIDENCE</button></div><p class="sub" style="margin:8px 0 12px">Files are not uploaded here (there is no file server). Record what evidence exists and where it is kept — e.g. photo filename on the technician phone, signed handover sheet in a folder.</p>';
+  if(!I.evidence.length)h+='<div class="empty">No evidence recorded.</div>';
+  I.evidence.forEach(function(e,i){h+='<div class="grid g2">'+JF('Description','install.evidence.'+i+'.desc')+JF('File name / location','install.evidence.'+i+'.file')+'</div>';});
+  return h+'</div>';
+}
+function tWarranty(j){
+  var h='<div class="row"><div><h2>Warranty records for this job</h2><p class="sub">Keep supplier/manufacturer warranty, PixelProTech workmanship terms and any service agreement as separate records. Enter only terms that really exist.</p></div><div class="sp"></div><button class="pri" data-act="addwar">+ ADD WARRANTY RECORD</button></div><div style="height:12px"></div>';
+  if(!j.warranties.length)return h+'<div class="empty">No warranty records for this job.</div>';
+  j.warranties.forEach(function(w,i){var b='warranties.'+i;
+    var opts=[['','—']].concat(S.suppliers.map(function(s){return [s.id,s.name];}));
+    h+='<div class="panel"><div class="grid g3">'+JF('Component / item',b+'.component')+JF('Warranty type',b+'.type',{type:'select',opts:WTYPES})+F('Supplier','job',b+'.supplier',w.supplier,{type:'select',opts:opts})+JF('Purchase date',b+'.purchase',{type:'date'})+JF('Installation date',b+'.installDate',{type:'date'})+JF('Duration (months)',b+'.months',{num:1,type:'number',after:'render'})+JF('Supplier warranty reference',b+'.supRef')+JF('Claim status',b+'.claim',{type:'select',opts:CLAIMS})+'<div class="fg"><label>Warranty expiry (calculated)</label><div style="padding:10px 0;font-family:var(--mono);font-size:12px;color:var(--teal)">'+esc(warExpiry(w)||'— enter start date and duration —')+'</div></div></div>'+JF('Client handover details',b+'.handover',{type:'textarea',ph:'who received the documents / terms, and when'})+'</div>';
+  });
+  return h;
+}
+function warExpiry(w){var st=w.installDate||w.purchase;if(!st||!(w.months>0))return '';var d=new Date(st+'T12:00:00');d.setMonth(d.getMonth()+Math.round(w.months));return d.toISOString().slice(0,10);}
+function vWar(){
+  var rows=[];S.jobs.forEach(function(j){j.warranties.forEach(function(w){rows.push({j:j,w:w});});});
+  var h='<div class="hud">// After-sales</div><h1>Warranty register</h1><p class="sub">All warranty records across jobs. Edit them inside the relevant job.</p><div style="height:14px"></div>';
+  if(!rows.length)return h+'<div class="empty">No warranty records yet.</div>';
+  var t=today();
+  h+='<div class="panel tw"><table><tr><th>Job</th><th>Component</th><th>Type</th><th>Supplier</th><th>Expiry</th><th>Claim</th><th></th></tr>'+rows.map(function(r){var e=warExpiry(r.w);var cls=!e?'':(e<t?'b-red':(e<addDays(t,30)?'b-amber':'b-green'));return '<tr><td style="color:var(--purple)">'+esc(r.j.ref)+'</td><td>'+esc(r.w.component)+'</td><td>'+esc(r.w.type)+'</td><td>'+esc(r.w.supplier?supName(r.w.supplier):'—')+'</td><td>'+(e?'<span class="badge '+cls+'">'+esc(e)+(e<t?' · EXPIRED':'')+'</span>':'—')+'</td><td>'+esc(r.w.claim)+'</td><td><button class="sm" data-act="openjob" data-id="'+r.j.id+'">OPEN JOB</button></td></tr>';}).join('')+'</table></div>';
+  return h;
+}
+function vSup(){
+  var h='<div class="row"><div><div class="hud">// Supplier register</div><h1>Suppliers</h1><p class="sub">The four entries below are prospective leads only — not confirmed partners. No contact details, prices, stock or authorisations have been filled in. Add them only after you verify them yourself. Suppliers are archived, never deleted, so purchasing history stays intact.</p></div><div class="sp"></div><button data-act="suparchshow">'+(ui.supShowArch?'HIDE':'SHOW')+' ARCHIVED</button><button class="pri" data-act="supnew">+ ADD SUPPLIER</button></div><div style="height:16px"></div>';
+  var list=S.suppliers.filter(function(s){return ui.supShowArch||!s.archived;});
+  list.forEach(function(s){
+    var orders=0;S.jobs.forEach(function(j){j.orders.forEach(function(o){if(o.supplier===s.id)orders++;});});
+    var open=ui.supEdit===s.id;
+    h+='<div class="panel"><div class="row"><div><h3 style="margin:0">'+esc(s.name)+'</h3><div style="margin-top:6px" class="row"><span class="badge '+(s.status==='Approved for purchasing'?'b-green':(s.status==='Rejected'?'b-red':'b-amber'))+'">'+esc(s.status)+'</span>'+(s.type==='Verification resource'?'<span class="badge b-teal">VERIFICATION SOURCE — NOT A DIRECT SUPPLIER</span>':'')+(s.archived?'<span class="badge b-red">ARCHIVED</span>':'')+'<span class="badge">'+orders+' order(s) on record</span>'+(s.verified?'<span class="badge">verified '+esc(s.verified)+'</span>':'')+'</div></div><div class="sp"></div><button class="sm" data-act="supedit" data-id="'+s.id+'">'+(open?'CLOSE':'EDIT')+'</button><button class="sm" data-act="suparch" data-id="'+s.id+'">'+(s.archived?'RESTORE':'ARCHIVE')+'</button></div>';
+    if(open){
+      function SF(l,p,o){o=o||{};o.sid=s.id;return F(l,'sup',p,s[p],o);}
+      h+='<div style="height:14px"></div><div class="grid g3">'+SF('Supplier name','name',{after:'render'})+SF('Website','website',{ph:'add only once confirmed'})+SF('Contact details','contact')+SF('Physical location','location')+SF('Brands supplied','brands')+SF('Component categories','categories')+SF('Trade account availability','trade')+SF('Business pricing','pricing',{ph:'only from a real quotation'})+SF('Stock availability','stock')+SF('Delivery coverage','delivery')+SF('Warranty terms','warranty')+SF('Returns / dead-on-arrival policy','returns')+SF('VAT invoice available?','vat')+SF('Verification status','status',{type:'select',opts:SUP_STATUSES,after:'render'})+'<div class="fg"><label>Last verification date</label><div class="row"><input type="date" data-scope="sup" data-sid="'+s.id+'" data-f="verified" value="'+esc(s.verified)+'" style="flex:1"><button class="sm" data-act="verifytoday" data-id="'+s.id+'">TODAY</button></div></div></div>'+SF('Internal notes','notes',{type:'textarea'});
+    }
+    h+='</div>';
+  });
+  return h;
+}
+function vSet(){
+  var s=S.settings,h='<div class="hud">// Configuration</div><h1>Settings &amp; data</h1><div style="height:14px"></div>';
+  function SF(l,p,o){return F(l,'set',p,s[p],o);}
+  h+='<div class="panel"><h2>Tax & quotation defaults</h2><p class="sub" style="margin-bottom:12px">VAT is off by default. Switch it on only if PixelProTech is actually VAT-registered. When on, VAT is added on top of the quote subtotal.</p><div class="grid g3">'+SF('PixelProTech is VAT-registered','vatRegistered',{type:'checkbox',after:'render'})+SF('VAT rate (%)','vatRate',{num:1,type:'number',after:'render'})+SF('Default quote validity (days)','defValidity',{num:1,type:'number'})+'</div>'+SF('Payment instructions shown on quotations','payInstr',{type:'textarea',ph:'e.g. banking details exactly as they should appear on documents'})+SF('Default payment terms','defPayTerms',{type:'textarea'})+SF('Default warranty wording','defWarranty',{type:'textarea'})+SF('Default exclusions and conditions','defExclusions',{type:'textarea'})+'<p class="sub">Defaults apply to quotations created from now on.</p></div>';
+  h+='<div class="panel"><h2>Backup & restore</h2><p class="sub" style="margin-bottom:12px">Your records exist only in this browser. Clearing site data, switching browser or device will lose them. Export a JSON file regularly and keep it somewhere safe. Exports contain client personal information and internal costs — store them securely (POPIA).</p><div class="row"><button class="pri" data-act="export">EXPORT ALL DATA (JSON)</button><button data-act="import">IMPORT FROM FILE</button><input type="file" id="impfile" accept=".json,application/json" style="display:none" onchange="if(this.files[0]){importData(this.files[0]);this.value=\'\';}"></div></div>';
+  h+='<div class="panel"><h2>About persistence & access</h2><p class="sub">This site is static (GitHub Pages) with no backend or login. That means: (1) there is no central database — this tool is a single-device record, (2) the page itself is public but contains no data, (3) client documents can be printed or saved as PDF from the browser. A shared multi-device database with real staff login needs a backend (for example Supabase with row-level security) — that is a separate build and is not simulated here.</p></div>';
+  h+='<div class="panel"><h2>Audit log (latest 150)</h2><div class="log">'+S.audit.slice(-150).reverse().map(function(a){return esc(a.ts.slice(0,16).replace('T',' '))+' — '+esc(a.action)+(a.job?' ['+esc((S.jobs.find(function(j){return j.id===a.job;})||{}).ref||'')+']':'');}).join('<br>')+'</div></div>';
+  return h;
+}
+
+/* ================= SECTION 16: INTERNATIONAL TECHNOLOGY PARTNERS ================= */
+var PSTATUSES=['Research lead','Contacted','Application submitted','Awaiting response','Negotiating','Approved','Active partner','Rejected','Suspended'];
+var IMODELS=['Referral','Affiliate','Reseller','White-label','Implementation & service delivery'];
+var ICATS=['Cloud hosting & infrastructure','Cybersecurity & endpoint protection','Remote IT management & monitoring','Backup & disaster recovery','Business software & productivity','Automation & workflow software','Website, hosting & domains','Hardware & technology distribution','Software licensing & digital tools'];
+var BASES=['Unknown','Published programme term','Negotiated / agreed in writing'];
+var CURR=['ZAR','USD','EUR','GBP','Other'];
+function pById(id){return S.partners.find(function(p){return p.id===id;});}
+function partnerLive(p){return p.status==='Approved'||p.status==='Active partner';}
+function pName(id){var p=pById(id);return p?p.name:'(none)';}
+function genIRef(){var c='ABCDEFGHJKLMNPQRSTUVWXYZ23456789',r='IT-';for(var i=0;i<6;i++)r+=c[Math.floor(Math.random()*c.length)];return r;}
+function CF(coll,rec,label,path,o){o=o||{};o.coll=coll;o.sid=rec.id;return F(label,'coll',path,getPath(rec,path),o);}
+function partnerGate(p,s){
+  if(s==='Approved'||s==='Active partner'){
+    if(!p.website)return 'Cannot set "'+s+'": record the partner\'s official website first (only companies with a verifiable official website may be registered as approved).';
+    if(!p.approvalEvidence||!p.approvedDate)return 'Cannot set "'+s+'": record the written approval date and the evidence reference (email / contract / programme dashboard confirmation). PixelProTech may not call itself an authorised partner before written approval.';
+    if(!p.verified)return 'Cannot set "'+s+'": set the last verification date after checking the terms against the company\'s official sources.';
+    if((p.commission&&p.commBasis==='Unknown')||(p.recurring&&p.recBasis==='Unknown'))return 'Cannot set "'+s+'": a commission / margin / recurring-income value is entered but its basis is "Unknown". Mark it Published (with source) or Negotiated (with agreement reference), or clear the value.';
+    if((p.commission&&p.commBasis!=='Unknown'&&!p.commSource)||(p.recurring&&p.recBasis!=='Unknown'&&!p.recSource))return 'Cannot set "'+s+'": cite the source (URL or agreement reference) for the commission / recurring terms.';
+  }
+  return '';
+}
+function changePartnerStatus(t){
+  var p=pById(t.dataset.sid),s=t.value,m=partnerGate(p,s);
+  if(m){alert(m);t.value=p.status;return;}
+  p.status=s;
+  if(!partnerLive(p)){var n=0;S.offerings.forEach(function(o){if(o.partnerId===p.id&&o.listed){o.listed=false;n++;}});if(n)alert(n+' offering(s) from this partner were un-listed because the partner is no longer Approved / Active.');}
+  audit('Partner status → '+s+' ('+p.name+')');save();render();
+}
+function vIntl(){
+  var tabs=[['partners','PARTNER REGISTER'],['cat','CATALOGUE'],['cust','CUSTOMERS & RENEWALS'],['enq','ENQUIRIES'],['inc','PARTNER INCOME']];
+  var h='<div class="hud">// Channel B — international technology</div><h1>International technology partners</h1><div class="msg warn"><b>Rule:</b> PixelProTech may describe itself as an authorised reseller, distributor or partner of a company only once that company\'s approval is recorded in writing (status Approved or Active partner). Until then, a company here is only a lead. Nothing in this register is pre-filled — enter terms only from official sources or signed agreements.</div><div class="sub-tabs">'+tabs.map(function(t){return '<button class="tab'+(ui.itab===t[0]?' on':'')+'" data-act="itab" data-id="'+t[0]+'">'+t[1]+'</button>';}).join('')+'</div>';
+  return h+({partners:iPartners,cat:iCatalogue,cust:iCustomers,enq:iEnq,inc:iIncome}[ui.itab])();
+}
+function iPartners(){
+  var h='<div class="row"><p class="sub">Register only companies with a verifiable official website and identifiable business operations. Published programme terms, negotiated terms and unknown terms are tracked separately.</p><div class="sp"></div><button class="pri" data-act="padd">+ ADD PARTNER LEAD</button></div><div style="height:14px"></div>';
+  if(!S.partners.length)return h+'<div class="empty">No international partners registered yet. The register starts empty on purpose — no company or term has been assumed.</div>';
+  S.partners.forEach(function(p){
+    var open=ui.pEdit===p.id,live=partnerLive(p);
+    function B(b){return b==='Published programme term'?'<span class="badge b-teal">PUBLISHED</span>':(b==='Negotiated / agreed in writing'?'<span class="badge b-purple">NEGOTIATED</span>':'<span class="badge b-amber">UNKNOWN</span>');}
+    h+='<div class="panel"><div class="row"><div><h3 style="margin:0">'+esc(p.name)+(p.country?' · '+esc(p.country):'')+'</h3><div class="row" style="margin-top:6px"><span class="badge '+(live?'b-green':(p.status==='Rejected'||p.status==='Suspended'?'b-red':'b-amber'))+'">'+esc(p.status)+'</span><span class="badge">'+esc(p.model)+'</span><span class="badge">'+esc(p.category)+'</span>'+(live?'':'<span class="badge b-red">NOT AN AUTHORISED PARTNER — DO NOT CLAIM</span>')+(p.commission?B(p.commBasis):'')+(p.verified?'<span class="badge">verified '+esc(p.verified)+'</span>':'<span class="badge b-amber">NOT VERIFIED</span>')+'</div></div><div class="sp"></div><button class="sm" data-act="pedit" data-id="'+p.id+'">'+(open?'CLOSE':'EDIT')+'</button></div>';
+    if(open){
+      function X(l,k,o){return CF('partners',p,l,k,o);}
+      h+='<div style="height:14px"></div><div class="grid g3">'+X('Company name','name',{after:'render'})+X('Country','country')+X('Official website','website',{ph:'https://…'})+X('Product / service category','category',{type:'select',opts:ICATS,after:'render'})+X('Partnership programme URL','programmeUrl',{ph:'https://…'})+X('Partnership model','model',{type:'select',opts:IMODELS,after:'render'})+X('South African eligibility','saElig',{type:'select',opts:['Unknown','Confirmed eligible (source recorded)','Not eligible','Case-by-case']})+X('Eligibility source','saSource',{ph:'URL / email reference'})+'<div class="fg"><label>Status</label><select data-pstatus="1" data-sid="'+p.id+'">'+PSTATUSES.map(function(s){return '<option'+(s===p.status?' selected':'')+'>'+esc(s)+'</option>';}).join('')+'</select></div>'+X('Application submitted on','appDate',{type:'date'})+X('Written approval date','approvedDate',{type:'date'})+X('Written approval evidence reference','approvalEvidence',{ph:'email date/ID, contract no., dashboard'})+'</div>';
+      h+='<h3 style="margin-top:8px">Commercial terms</h3><div class="grid g3">'+X('Commission or reseller margin','commission',{ph:'enter only a real figure'})+X('Basis of that figure','commBasis',{type:'select',opts:BASES})+X('Source (URL / agreement ref)','commSource')+X('Recurring revenue terms','recurring',{ph:'e.g. as stated by the programme'})+X('Basis of that figure','recBasis',{type:'select',opts:BASES})+X('Source (URL / agreement ref)','recSource')+X('Payout currency','payCurrency')+X('Payout method','payMethod')+X('Minimum payout threshold','payMin')+'</div>'+X('Contract / programme conditions','conditions',{type:'textarea'})+X('Certification requirements','certs',{type:'textarea'})+X('Support responsibilities (who supports the customer)','support',{type:'textarea'})+'<div class="fg"><label>Last verification date</label><div class="row"><input type="date" data-scope="coll" data-coll="partners" data-sid="'+p.id+'" data-f="verified" value="'+esc(p.verified)+'" style="max-width:200px"><button class="sm" data-act="pverify" data-id="'+p.id+'">TODAY</button></div></div>'+X('Internal notes','notes',{type:'textarea'});
+      h+='<div class="row" style="margin-top:6px"><h3 style="margin:0">Agreements & correspondence</h3><div class="sp"></div><button class="sm" data-act="pcorr" data-id="'+p.id+'">+ ADD RECORD</button></div>';
+      if(!p.corr.length)h+='<div class="empty" style="margin-top:8px">No correspondence recorded.</div>';
+      p.corr.forEach(function(c,i){var b='corr.'+i;h+='<div class="grid g4" style="margin-top:8px">'+X('Date',b+'.date',{type:'date'})+X('Type',b+'.type',{type:'select',opts:['Email','Application','Agreement / contract','Call','Programme terms page','Other']})+X('Reference / file name',b+'.ref')+X('Summary',b+'.summary')+'</div>';});
+    }
+    h+='</div>';
+  });
+  return h;
+}
+function iCatalogue(){
+  var h='<div class="row"><p class="sub">Only offerings from partners with status Approved or Active partner can exist here. Prices are whatever you enter (nothing is estimated), with once-off setup and recurring charges kept separate. "Listed publicly" controls what the export below contains.</p><div class="sp"></div><button class="pri" data-act="oadd">+ ADD OFFERING</button></div><div style="height:14px"></div>';
+  if(!S.offerings.length)h+='<div class="empty">No offerings yet. Offerings become possible after a partner reaches Approved / Active partner with written approval recorded.</div>';
+  S.offerings.forEach(function(o){
+    var p=pById(o.partnerId),live=p&&partnerLive(p),open=ui.oEdit===o.id;
+    h+='<div class="panel"><div class="row"><div><h3 style="margin:0">'+esc(o.name||'Unnamed offering')+'</h3><div class="row" style="margin-top:6px"><span class="badge">'+esc(pName(o.partnerId))+'</span><span class="badge '+(live?'b-green':'b-red')+'">'+esc(p?p.status:'no partner')+'</span><span class="badge">'+(o.setup>0?'Setup '+esc(o.currency)+' '+Number(o.setup).toFixed(2):'No setup charge')+'</span><span class="badge">'+(o.recurring>0?'Recurring '+esc(o.currency)+' '+Number(o.recurring).toFixed(2)+' / '+esc(o.period):'No recurring charge')+'</span>'+(o.listed&&live?'<span class="badge b-teal">LISTED PUBLICLY</span>':'')+'</div></div><div class="sp"></div><button class="sm" data-act="oedit" data-id="'+o.id+'">'+(open?'CLOSE':'EDIT')+'</button></div>';
+    if(open){
+      function X(l,k,x){return CF('offerings',o,l,k,x);}
+      var popts=S.partners.filter(function(q){return partnerLive(q)||q.id===o.partnerId;}).map(function(q){return [q.id,q.name+' ('+q.status+')'];});
+      h+='<div style="height:14px"></div><div class="grid g3">'+X('Partner','partnerId',{type:'select',opts:popts,after:'render'})+X('Product / service name','name',{after:'render'})+X('Category','category',{type:'select',opts:ICATS})+X('Currency','currency',{type:'select',opts:CURR,after:'render'})+X('Once-off setup / implementation charge','setup',{num:1,type:'number',after:'render'})+X('Recurring subscription charge','recurring',{num:1,type:'number',after:'render'})+X('Subscription period','period',{type:'select',opts:['Monthly','Quarterly','Annual','Other'],after:'render'})+'</div>'+X('Short description for customers','desc',{type:'textarea'})+X('Terms / conditions (renewal, minimum term, cancellation)','terms',{type:'textarea'});
+      h+='<label class="ck"><input type="checkbox" data-scope="coll" data-coll="offerings" data-sid="'+o.id+'" data-f="listed" data-after="render"'+(o.listed?' checked':'')+(live?'':' disabled')+'> <span>List this offering on the public website'+(live?'':' (disabled: partner is not Approved / Active)')+'</span></label>';
+    }
+    h+='</div>';
+  });
+  var listed=S.offerings.filter(function(o){var p=pById(o.partnerId);return o.listed&&p&&partnerLive(p)&&o.name;});
+  var arr=listed.map(function(o){var x={name:o.name,category:o.category,desc:o.desc||''};if(o.setup>0){x.setup=o.setup;}if(o.recurring>0){x.recurring=o.recurring;x.period=o.period;}if(o.setup>0||o.recurring>0)x.currency=o.currency;return x;});
+  h+='<div class="panel"><h2>Public catalogue export</h2><p class="sub" style="margin-bottom:10px">Copy this into the <b>INTL_CATALOGUE</b> line in index.html, then re-upload index.html. Only listed offerings from Approved / Active partners are included. Prices appear publicly only if you entered them; no currency conversion is done. Partner company names are not exported — add a name to the description only if your agreement allows it.</p><textarea readonly style="min-height:120px" onclick="this.select()">var INTL_CATALOGUE = '+esc(JSON.stringify(arr,null,2))+';</textarea></div>';
+  return h;
+}
+function iCustomers(){
+  var t=today(),soon=addDays(t,60);
+  var h='<div class="row"><p class="sub">Customer subscription records: once-off setup and recurring charges are tracked separately, with renewal dates. These contain personal information — keep exports secure.</p><div class="sp"></div><button class="pri" data-act="cadd">+ ADD CUSTOMER RECORD</button></div><div style="height:14px"></div>';
+  if(!S.customers.length)return h+'<div class="empty">No customer subscription records yet.</div>';
+  S.customers.slice().sort(function(a,b){return (a.renewal||'9999').localeCompare(b.renewal||'9999');}).forEach(function(c){
+    var open=ui.cEdit===c.id,o=S.offerings.find(function(x){return x.id===c.offeringId;});
+    var rb=!c.renewal||c.status!=='Active'?'':(c.renewal<t?'<span class="badge b-red">RENEWAL OVERDUE '+esc(c.renewal)+'</span>':(c.renewal<=soon?'<span class="badge b-amber">RENEWS '+esc(c.renewal)+'</span>':'<span class="badge">renews '+esc(c.renewal)+'</span>'));
+    h+='<div class="panel"><div class="row"><div><h3 style="margin:0">'+esc(c.name||'Unnamed customer')+'</h3><div class="row" style="margin-top:6px"><span class="badge">'+esc(o?o.name:'(offering)')+'</span><span class="badge '+(c.status==='Active'?'b-green':'b-amber')+'">'+esc(c.status)+'</span><span class="badge">Setup charged '+esc(c.currency)+' '+Number(c.setupCharged||0).toFixed(2)+'</span><span class="badge">Recurring '+esc(c.currency)+' '+Number(c.recurringAmount||0).toFixed(2)+' / '+esc(c.period)+'</span>'+rb+'</div></div><div class="sp"></div><button class="sm" data-act="cedit" data-id="'+c.id+'">'+(open?'CLOSE':'EDIT')+'</button></div>';
+    if(open){
+      function X(l,k,x){return CF('customers',c,l,k,x);}
+      h+='<div style="height:14px"></div><div class="grid g3">'+X('Customer / organisation','name',{after:'render'})+X('Contact person','contact')+X('Email','email')+X('Telephone','tel')+X('Offering','offeringId',{type:'select',opts:S.offerings.map(function(x){return [x.id,x.name||'(unnamed)'];}),after:'render'})+X('Record status','status',{type:'select',opts:['Quoted','Active','Cancelled','Lapsed'],after:'render'})+X('Start date','start',{type:'date'})+X('Subscription period','period',{type:'select',opts:['Monthly','Quarterly','Annual','Other'],after:'render'})+X('Next renewal date','renewal',{type:'date',after:'render'})+X('Currency','currency',{type:'select',opts:CURR,after:'render'})+X('Once-off setup charged','setupCharged',{num:1,type:'number',after:'render'})+X('Recurring amount per period','recurringAmount',{num:1,type:'number',after:'render'})+'</div>'+X('Notes','notes',{type:'textarea'});
+    }
+    h+='</div>';
+  });
+  return h;
+}
+function iEnq(){
+  var h='<div class="row"><p class="sub">Paste an enquiry sent from the website\'s international-technology form, or add one manually. An enquiry is not a sale — PixelProTech only quotes offerings it is authorised to supply.</p><div class="sp"></div><button class="pri" data-act="eadd">+ ADD MANUALLY</button></div><div style="height:10px"></div><div class="panel"><textarea id="rawienq" placeholder="INTERNATIONAL TECHNOLOGY ENQUIRY — IT-XXXXXX …"></textarea><div style="height:10px"></div><button data-act="eparse">CREATE FROM PASTED TEXT</button><div id="ienqmsg"></div></div>';
+  if(!S.ienq.length)return h+'<div class="empty">No international enquiries recorded.</div>';
+  S.ienq.forEach(function(e){
+    var open=ui.eEdit===e.id;
+    h+='<div class="panel"><div class="row"><div><h3 style="margin:0"><span style="color:var(--purple)">'+esc(e.ref)+'</span> · '+esc(e.name||'Unnamed')+'</h3><div class="row" style="margin-top:6px"><span class="badge '+(e.status==='Won'?'b-green':(e.status==='Cannot supply'||e.status==='Lost'?'b-red':'b-amber'))+'">'+esc(e.status)+'</span>'+(e.cats?'<span class="badge">'+esc(e.cats)+'</span>':'')+'</div></div><div class="sp"></div><button class="sm" data-act="eedit" data-id="'+e.id+'">'+(open?'CLOSE':'OPEN')+'</button></div>';
+    if(open){function X(l,k,x){return CF('ienq',e,l,k,x);}
+      h+='<div style="height:14px"></div><div class="grid g3">'+X('Organisation','name',{after:'render'})+X('Contact person','contact')+X('Email','email')+X('Telephone','tel')+X('Location','loc')+X('Interested in','cats')+X('Users / devices / scale','scale')+X('Status','status',{type:'select',opts:['New','Assessing','Quoted','Won','Lost','Cannot supply'],after:'render'})+'</div>'+X('Need described by client','need',{type:'textarea'})+X('Internal notes','notes',{type:'textarea'});}
+    h+='</div>';
+  });
+  return h;
+}
+function parseIEnq(){
+  var t=document.getElementById('rawienq').value,out=document.getElementById('ienqmsg');
+  if(!t.trim()){out.innerHTML='<div class="msg err">Paste the enquiry text first.</div>';return;}
+  function g(label){var m=t.match(new RegExp('^'+label.replace(/[.*+?^${}()|[\]\\\/]/g,'\\$&')+'\\s*(.*)$','m'));return m?m[1].trim():'';}
+  var rm=t.match(/(IT-[A-Z0-9]{6})/),ref=rm?rm[1]:genIRef();
+  if(S.ienq.some(function(x){return x.ref===ref;})){out.innerHTML='<div class="msg err">Enquiry '+esc(ref)+' already exists.</div>';return;}
+  var e={id:uid(),ref:ref,created:nowTs(),name:g('Name/Organisation:'),contact:g('Contact person:'),email:g('Email:'),tel:g('Phone:'),loc:g('Location:'),cats:g('Interested in:'),need:g('Requirement:'),scale:g('Users / devices:'),status:'New',notes:'Imported from pasted text on '+today()+'. Preferred contact: '+g('Preferred contact:')};
+  S.ienq.unshift(e);audit('International enquiry imported '+ref);save();ui.eEdit=e.id;render();
+}
+function iIncome(){
+  var h='<div class="row"><p class="sub">Record income only when it has actually been received or confirmed on a partner statement. Totals are shown per currency — nothing is converted or estimated.</p><div class="sp"></div><button class="pri" data-act="iadd">+ ADD INCOME ENTRY</button></div><div style="height:14px"></div>';
+  if(!S.income.length)return h+'<div class="empty">No partner income recorded.</div>';
+  var by={};S.income.forEach(function(x){by[x.currency]=r2((by[x.currency]||0)+(x.amount||0));});
+  h+='<div class="grid g4" style="margin-bottom:14px">'+Object.keys(by).map(function(k){return '<div class="stat"><div class="n">'+esc(k)+' '+Number(by[k]).toLocaleString('en-ZA',{minimumFractionDigits:2})+'</div><div class="l">Recorded income ('+esc(k)+')</div></div>';}).join('')+'</div>';
+  var popts=[['','—']].concat(S.partners.map(function(p){return [p.id,p.name];}));
+  h+='<div class="panel tw"><table><tr><th>Date</th><th>Partner</th><th>Type</th><th>Amount</th><th>Currency</th><th>Statement / reference</th><th>Notes</th></tr>'+S.income.map(function(x){function X(k,o){o=o||{};o.bare=1;return CF('income',x,'',k,o);}return '<tr><td>'+X('date',{type:'date'})+'</td><td>'+X('partnerId',{type:'select',opts:popts})+'</td><td>'+X('type',{type:'select',opts:['Commission','Reseller margin','Implementation fee','Support fee','Recurring share','Other']})+'</td><td>'+X('amount',{num:1,type:'number',after:'render'})+'</td><td>'+X('currency',{type:'select',opts:CURR,after:'render'})+'</td><td>'+X('ref')+'</td><td>'+X('notes')+'</td></tr>';}).join('')+'</table></div>';
+  return h;
+}
+
+/* ---------- client documents ---------- */
+function docHead(title,sub){return '<div class="dh"><div><h1>'+esc(title)+'</h1><div class="small">'+esc(sub)+'</div></div><div class="co" style="text-align:right"><b>PixelProTech Solutions (Pty) Ltd</b><br>Reg. 2026/622131/07<br>Centurion, Gauteng<br>065 197 1461<br>pixelprotechsolutions@proton.me</div></div>';}
+function showPrint(html){var p=document.getElementById('printView');p.innerHTML='<div class="pbar"><button class="pri" data-act="doprint">PRINT / SAVE AS PDF</button><button data-act="closeprint">CLOSE</button></div><div class="doc">'+html+'</div>';p.className='on';p.scrollTop=0;}
+function printQuote(){
+  var j=J(),q=j.quote;if(!q)return;
+  var c=calcQuote(j),v=S.settings.vatRegistered;
+  function sect(cat,label){var ls=q.lines.filter(function(l){return l.cat===cat&&l.include!==false;});if(!ls.length)return '';
+    return '<h4>'+label+'</h4><table><tr><th>Description</th>'+(cat==='Hardware'?'<th>Type</th>':'')+'<th class="r">Qty</th><th class="r">Unit price</th><th class="r">Amount</th></tr>'+ls.map(function(l){var x=lineCalc(l);return '<tr><td>'+esc(l.desc)+'</td>'+(cat==='Hardware'?'<td>'+esc(l.cond&&l.cond!=='Unspecified'?l.cond:'—')+'</td>':'')+'<td class="r">'+esc(l.qty)+'</td><td class="r">'+money(x.unit)+'</td><td class="r">'+money(x.sell)+'</td></tr>';}).join('')+'</table>';}
+  var valid=q.issued&&q.validDays?addDays(q.issued,Math.round(q.validDays)):'';
+  var h=docHead('QUOTATION','No. '+q.number+' · Issued '+q.issued);
+  if(q.approval==='Draft')h='<div class="draft">DRAFT — not yet issued to client</div>'+h;
+  h+='<h4>Prepared for</h4><div class="kv"><span>Client</span><span>'+esc(j.client.org)+'</span><span>Contact</span><span>'+esc(j.client.contact)+'</span><span>Email / phone</span><span>'+esc(j.client.email)+' · '+esc(j.client.tel)+'</span><span>Location</span><span>'+esc(j.client.loc)+'</span><span>Request ref</span><span>'+esc(j.ref)+'</span></div>';
+  if(q.scope)h+='<h4>Scope of work</h4><div style="white-space:pre-wrap">'+esc(q.scope)+'</div>';
+  h+=sect('Hardware','Hardware')+sect('Installation','Installation')+sect('Additional','Additional services')+sect('Delivery','Delivery');
+  h+='<h4>Totals</h4><table><tr><td>Hardware</td><td class="r">'+money(c.cats.Hardware)+'</td></tr><tr><td>Installation</td><td class="r">'+money(c.cats.Installation)+'</td></tr><tr><td>Additional services</td><td class="r">'+money(c.cats.Additional)+'</td></tr><tr><td>Delivery</td><td class="r">'+money(c.cats.Delivery)+'</td></tr><tr><td>Subtotal</td><td class="r">'+money(c.sub)+'</td></tr>'+(v?'<tr><td>VAT @ '+esc(S.settings.vatRate)+'%</td><td class="r">'+money(c.vat)+'</td></tr>':'')+'<tr class="grand"><td>TOTAL PAYABLE</td><td class="r">'+money(c.total)+'</td></tr></table>'+(v?'':'<div class="small">No VAT is charged on this quotation.</div>');
+  h+='<h4>Terms</h4><div class="kv"><span>Valid until</span><span>'+esc(valid||'—')+'</span><span>Estimated delivery</span><span>'+esc(q.delivery||'To be confirmed on approval')+'</span><span>Payment terms</span><span style="white-space:pre-wrap">'+esc(q.payTerms||'To be agreed')+'</span></div>';
+  if(S.settings.payInstr)h+='<h4>Payment instructions</h4><div style="white-space:pre-wrap">'+esc(S.settings.payInstr)+'</div>';
+  h+='<h4>Warranty</h4><div style="white-space:pre-wrap">'+esc(q.warranty)+'</div><h4>Exclusions &amp; conditions</h4><div style="white-space:pre-wrap">'+esc(q.exclusions)+'</div>';
+  h+='<div class="small" style="margin-top:12px">Prices are based on supplier quotations and may change if the quotation expires. Hardware is ordered only after written approval and the agreed payment terms are met.</div>';
+  h+='<h4>Acceptance</h4><div class="sig"><div>Client name &amp; signature</div><div>Date</div></div>';
+  showPrint(h);
+}
+function printReport(){
+  var j=J(),I=j.install;
+  var draft=(I.result!=='Passed'&&I.result!=='Passed with observations');
+  var h=docHead('INSTALLATION & HANDOVER REPORT','Job '+j.ref+(I.completed?' · Completed '+I.completed:''));
+  if(draft)h='<div class="draft">DRAFT — final test result '+(I.result?'is "'+esc(I.result)+'"':'has not been recorded')+'. This is not a completion certificate.</div>'+h;
+  h+='<h4>Client &amp; site</h4><div class="kv"><span>Client</span><span>'+esc(j.client.org)+'</span><span>Contact</span><span>'+esc(j.client.contact)+'</span><span>Site address</span><span>'+esc(I.site||j.client.loc)+'</span><span>Equipment</span><span>'+esc([j.equip.make,j.equip.model].filter(Boolean).join(' ')||j.equip.type)+(I.equipId?' · '+esc(I.equipId):'')+'</span><span>Technician</span><span>'+esc(I.tech||'—')+'</span><span>Scheduled date</span><span>'+esc(I.date||'—')+'</span></div>';
+  h+='<h4>Work performed</h4><table><tr><th>Step</th><th>Done</th><th>Note</th></tr>'+CHECKLIST.map(function(c){var v=I.checklist[c[0]]||{};return '<tr><td>'+esc(c[1])+'</td><td>'+(v.done?'Yes':'No')+'</td><td>'+esc(v.note||'')+'</td></tr>';}).join('')+'</table>';
+  var recv=j.orders.filter(function(o){return o.received;});
+  h+='<h4>Parts installed</h4>'+(I.parts?'<div style="white-space:pre-wrap">'+esc(I.parts)+'</div>':'<div class="small">None recorded.</div>')+(recv.length?'<div class="small" style="margin-top:6px">Components received: '+recv.map(function(o){return esc(o.received);}).join(' | ')+'</div>':'');
+  h+='<h4>Test result</h4><div class="kv"><span>Technician-recorded outcome</span><span><b>'+esc(I.result||'Not yet recorded')+'</b></span></div>'+(I.notes?'<div style="white-space:pre-wrap">'+esc(I.notes)+'</div>':'');
+  h+='<h4>Outstanding issues</h4><div style="white-space:pre-wrap">'+esc(I.outstanding||'None recorded.')+'</div>';
+  h+='<h4>Warranty details</h4>'+(j.warranties.length?'<table><tr><th>Item</th><th>Type</th><th>Supplier</th><th>Ref</th><th>Expires</th></tr>'+j.warranties.map(function(w){return '<tr><td>'+esc(w.component)+'</td><td>'+esc(w.type)+'</td><td>'+esc(w.supplier?supName(w.supplier):'—')+'</td><td>'+esc(w.supRef||'—')+'</td><td>'+esc(warExpiry(w)||'—')+'</td></tr>';}).join('')+'</table>':'<div class="small">No warranty records entered.</div>')+'<div class="small">Hardware warranty is limited to the supplier / manufacturer terms stated above.</div>';
+  h+='<h4>Completion</h4><div class="kv"><span>Completion date</span><span>'+esc(I.completed||'—')+'</span><span>Technician</span><span>'+esc(I.tech||'—')+'</span></div><div class="sig"><div>Technician signature</div><div>Client name, signature &amp; date</div></div>';
+  showPrint(h);
+}
+
+render();
+</script>
+</body>
+</html>
