@@ -351,6 +351,19 @@ footer{background:var(--dark);border-top:1px solid var(--border);padding:48px 5%
 @media(max-width:900px){.hw-cats,.hw-checks{grid-template-columns:1fr 1fr}.hw-form-wrap{padding:24px 18px}}
 @media(max-width:560px){.hw-cats,.hw-checks{grid-template-columns:1fr}}
 
+/* ===== PROOF (added) ===== */
+.proof-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:24px}
+.proof-card{overflow:hidden}
+.proof-card img{width:100%;height:190px;object-fit:cover;display:block;border-bottom:1px solid var(--border);background:var(--dark)}
+.proof-body{padding:20px 22px}
+.proof-type{font-family:var(--mono);font-size:10px;letter-spacing:2px;color:var(--teal);text-transform:uppercase;margin-bottom:8px}
+.proof-body h4{font-size:16px;font-weight:700;margin-bottom:6px}
+.proof-meta{font-family:var(--mono);font-size:10px;color:var(--dimmer);letter-spacing:1px;margin-bottom:10px}
+.proof-body p{font-family:var(--mono);font-size:11px;color:var(--muted);line-height:1.8}
+.cred-grid.proof-creds{grid-template-columns:repeat(3,1fr)}
+@media(max-width:900px){.proof-grid{grid-template-columns:1fr 1fr}.cred-grid.proof-creds{grid-template-columns:1fr}}
+@media(max-width:560px){.proof-grid{grid-template-columns:1fr}}
+
 [class*="watermark"],[class*="poweredby"],[class*="branding"],[id*="watermark"]{display:none!important}
 
 @media(max-width:900px){
@@ -394,6 +407,7 @@ footer{background:var(--dark);border-top:1px solid var(--border);padding:48px 5%
       <li><a href="#services">Services</a></li>
       <li><a href="#hardware">Hardware</a></li>
       <li><a href="#intl">Intl. Tech</a></li>
+      <li><a href="#proof">Proof</a></li>
       <li><a href="#credentials">Credentials</a></li>
       <li><a href="#coverage">Coverage</a></li>
       <li><a href="#contact">Support</a></li>
@@ -970,6 +984,62 @@ footer{background:var(--dark);border-top:1px solid var(--border);padding:48px 5%
   </div>
 </section>
 
+<!-- PROOF (added) -->
+<section class="hardware" id="proof" style="background:var(--dark);border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
+  <div class="section-inner">
+    <span class="hud-tag">// Proof</span>
+    <h2 class="section-title">Check us. Don't just take our word.</h2>
+    <p class="section-sub">What you can verify about PixelProTech today, and real work we publish only with the client's written permission.</p>
+
+    <div class="cred-grid proof-creds">
+      <div class="cred-card glass"><div class="cc-label">Company registration</div><div class="cc-val">2026/622131/07</div><div class="cc-sub">PixelProTech Solutions (Pty) Ltd · registered 04 August 2026. Quote this number to the CIPC to verify it.</div></div>
+      <div class="cred-card glass"><div class="cc-label">B-BBEE</div><div class="cc-val">Level 1 Contributor</div><div class="cc-sub">Certificate available to clients and procurement officers on request.</div></div>
+      <div class="cred-card glass"><div class="cc-label">Tax</div><div class="cc-val">SARS registered</div><div class="cc-sub">Tax details provided to clients on request for vendor onboarding.</div></div>
+    </div>
+    <div class="hero-btns" style="margin:22px 0 0">
+      <a class="btn-primary" id="proof-pack" href="#" target="_blank" rel="noopener">Request our credentials pack</a>
+    </div>
+
+    <h3 style="font-size:20px;font-weight:800;margin:56px 0 4px;letter-spacing:-.4px">Work we can show</h3>
+    <div id="proof-wall"></div>
+
+    <div class="hw-form-wrap glass" id="rv-box">
+      <span class="hud-tag">// Customer review</span>
+      <h3>Been a PixelProTech customer? Tell us how it went.</h3>
+      <p class="section-sub" style="max-width:680px">Write it in your own words — good or bad. With your permission, we may publish it here after we confirm you are a customer. We never edit your words.</p>
+      <form id="rv-form" novalidate onsubmit="return rvSubmit(event)" autocomplete="off">
+        <div class="form-row" style="margin-top:20px">
+          <div class="form-group"><label for="rv-name">Your name <span class="req">*</span></label><input type="text" id="rv-name" maxlength="80"></div>
+          <div class="form-group"><label for="rv-contact">Phone or email (so we can confirm you're a customer) <span class="req">*</span></label><input type="text" id="rv-contact" maxlength="120"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label for="rv-service">Service you received <span class="req">*</span></label>
+            <select id="rv-service"><option value="">Select…</option><option>Computer / laptop repair</option><option>Hardware upgrade or supply</option><option>Networking / Wi-Fi</option><option>Data backup / recovery</option><option>Software / security</option><option>School or office support</option><option>International technology service</option><option>Other</option></select></div>
+          <div class="form-group"><label for="rv-rating">Your rating <span class="req">*</span></label>
+            <select id="rv-rating"><option value="">Select…</option><option value="5">5 — Excellent</option><option value="4">4 — Good</option><option value="3">3 — Okay</option><option value="2">2 — Poor</option><option value="1">1 — Bad</option></select></div>
+        </div>
+        <div class="form-group"><label for="rv-text">Your review, in your own words <span class="req">*</span></label><textarea id="rv-text" maxlength="900" placeholder="What was the problem, what did we do, and how did it turn out?"></textarea></div>
+        <div class="form-group"><label for="rv-display">If published, how should we show you?</label>
+          <select id="rv-display"><option value="anonymous">Anonymously (e.g. "A client in Pretoria")</option><option value="named">With my name as typed above</option></select></div>
+        <label class="hw-check hw-consent"><input type="checkbox" id="rv-consent"> I give PixelProTech Solutions (Pty) Ltd permission to publish my review on its website exactly as written, shown as I chose above. I wrote this review myself and it is true. I can withdraw this permission at any time by contacting PixelProTech. <span class="req" style="color:var(--purple)">*</span></label>
+        <div class="hw-err" id="rv-err" role="alert" aria-live="polite"></div>
+        <button type="submit" class="submit-btn" style="margin-top:8px">PREPARE MY REVIEW →</button>
+      </form>
+      <div class="hw-result" id="rv-result">
+        <div style="font-family:var(--mono);font-size:10px;color:var(--dimmer);letter-spacing:2px">REVIEW REFERENCE</div>
+        <div class="hw-ref" id="rv-ref"></div>
+        <p><strong style="color:var(--white)">Your review is ready but not yet sent.</strong> Tap a button below so it opens with everything filled in, then press send. It is published only after we confirm you are a customer — it does not appear on the site automatically.</p>
+        <pre id="rv-preview"></pre>
+        <div class="hw-actions">
+          <a class="btn-primary" id="rv-wa" href="#" target="_blank" rel="noopener">Send on WhatsApp</a>
+          <a class="btn-secondary" id="rv-mail" href="#">Send by email</a>
+          <button type="button" class="btn-secondary" onclick="rvReset()">Write another</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- COVERAGE MATRIX -->
 <section class="coverage" id="coverage">
   <div class="section-inner">
@@ -1519,6 +1589,31 @@ function hwReset(){
    INTL_CATALOGUE is intentionally EMPTY. Fill it (from hardware-admin.html > Intl Tech Partners > Catalogue export)
    only with products PixelProTech has written approval to supply. */
 var INTL_CATALOGUE = [];
+/* PROOF_ITEMS is intentionally EMPTY. Fill it (from hardware-admin.html > Proof wall > export) only with
+   work the client has permitted in writing. Never add invented jobs or testimonials. */
+var PROOF_ITEMS = [];
+(function(){
+  var a=document.getElementById('proof-pack');
+  if(a)a.href='https://wa.me/27651971461?text='+encodeURIComponent('Hi PixelProTech, please send me your credentials pack (company registration, B-BBEE certificate and tax details) for vendor onboarding.');
+  var box=document.getElementById('proof-wall');if(!box)return;
+  if(!PROOF_ITEMS.length){
+    var d=document.createElement('div');d.className='hw-honest glass';
+    d.textContent='Client-approved case studies, photos and testimonials will be published here as jobs are completed and clients give written permission. We do not post made-up reviews or borrowed photos. Until then, ask us for references or the credentials pack above.';
+    box.appendChild(d);return;
+  }
+  var grid=document.createElement('div');grid.className='proof-grid';
+  PROOF_ITEMS.forEach(function(p){
+    var c=document.createElement('div');c.className='proof-card glass';
+    if(p.image){var im=document.createElement('img');im.src=p.image;im.alt=p.title||'';im.loading='lazy';im.onerror=function(){im.remove();};c.appendChild(im);}
+    var b=document.createElement('div');b.className='proof-body';
+    var t=document.createElement('div');t.className='proof-type';t.textContent=p.type||'';b.appendChild(t);
+    var h=document.createElement('h4');h.textContent=p.title||'';b.appendChild(h);
+    var m=document.createElement('div');m.className='proof-meta';m.textContent=[p.client,p.rating?p.rating+'/5':'',p.location,p.date].filter(Boolean).join(' · ');b.appendChild(m);
+    if(p.summary){var s=document.createElement('p');s.textContent=p.summary;b.appendChild(s);}
+    c.appendChild(b);grid.appendChild(c);
+  });
+  box.appendChild(grid);
+})();
 (function(){
   var box=document.getElementById('ix-catalogue');if(!box)return;
   if(!INTL_CATALOGUE.length){
@@ -1540,6 +1635,42 @@ var INTL_CATALOGUE = [];
   });
   box.appendChild(grid);
 })();
+/* ===== CUSTOMER REVIEW FORM (added) ===== */
+var rvText='';
+function rvVal(id){return (document.getElementById(id).value||'').replace(/[\u0000-\u0008\u000B-\u001F]/g,'').trim();}
+function rvRef(){var c='ABCDEFGHJKLMNPQRSTUVWXYZ23456789',r='RV-';for(var i=0;i<6;i++)r+=c[Math.floor(Math.random()*c.length)];return r;}
+function rvSubmit(e){
+  e.preventDefault();
+  var err=document.getElementById('rv-err');err.textContent='';
+  var f={name:rvVal('rv-name'),contact:rvVal('rv-contact'),service:rvVal('rv-service'),rating:rvVal('rv-rating'),text:rvVal('rv-text'),display:rvVal('rv-display')};
+  var msg=null;
+  if(!f.name)msg='Please enter your name.';
+  else if(!f.contact||f.contact.length<5)msg='Please enter a phone number or email so we can confirm you are a customer.';
+  else if(!f.service)msg='Please choose the service you received.';
+  else if(!f.rating)msg='Please choose a rating.';
+  else if(f.text.length<15)msg='Please write a little more about your experience.';
+  else if(!document.getElementById('rv-consent').checked)msg='Please tick the permission box if you want your review considered for publishing.';
+  if(msg){err.textContent=msg;return false;}
+  var ref=rvRef(),L=[];
+  L.push('CUSTOMER REVIEW — '+ref);L.push('');
+  L.push('Name: '+f.name);L.push('Contact: '+f.contact);L.push('Service received: '+f.service);L.push('Rating: '+f.rating+'/5');
+  L.push('Display as: '+(f.display==='named'?'named':'anonymous'));
+  L.push('Review: '+f.text.replace(/\s*\n+\s*/g,' '));
+  L.push('');L.push('Permission to publish: Yes. I wrote this review myself and it is true.');
+  rvText=L.join('\n');
+  document.getElementById('rv-ref').textContent=ref;
+  document.getElementById('rv-preview').textContent=rvText;
+  document.getElementById('rv-wa').href='https://wa.me/27651971461?text='+encodeURIComponent(rvText);
+  document.getElementById('rv-mail').href='mailto:pixelprotechsolutions@proton.me?subject='+encodeURIComponent('Customer review '+ref)+'&body='+encodeURIComponent(rvText);
+  document.getElementById('rv-form').style.display='none';
+  var r=document.getElementById('rv-result');r.style.display='block';r.scrollIntoView({behavior:'smooth',block:'start'});
+  return false;
+}
+function rvReset(){
+  document.getElementById('rv-form').reset();document.getElementById('rv-form').style.display='block';
+  document.getElementById('rv-result').style.display='none';document.getElementById('rv-err').textContent='';rvText='';
+  document.getElementById('rv-box').scrollIntoView({behavior:'smooth'});
+}
 var ixText='';
 function ixVal(id){return (document.getElementById(id).value||'').replace(/[\u0000-\u0008\u000B-\u001F]/g,'').trim();}
 function ixRef(){var c='ABCDEFGHJKLMNPQRSTUVWXYZ23456789',r='IT-';for(var i=0;i<6;i++)r+=c[Math.floor(Math.random()*c.length)];return r;}

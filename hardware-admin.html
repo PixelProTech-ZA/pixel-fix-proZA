@@ -154,15 +154,15 @@ function seedSuppliers(){
     mk('ASUS South Africa authorised partner directory','BRAND-SPECIFIC VERIFICATION SOURCE — used to check whether a reseller is an authorised ASUS partner. Not automatically a direct supplier.','Verification resource')
   ];
 }
-function blank(){return {v:1,suppliers:seedSuppliers(),jobs:[],partners:[],offerings:[],customers:[],income:[],ienq:[],audit:[],seq:{quote:0},settings:{vatRegistered:false,vatRate:15,payInstr:'',defPayTerms:'',defValidity:14,defWarranty:'Hardware carries the supplier / manufacturer warranty stated for each item. Installation workmanship terms are stated separately. No warranty beyond the supplier or manufacturer terms is implied.',defExclusions:'Pre-existing faults unrelated to the quoted work; loss of data not caused by PixelProTech; software licences unless itemised; work outside the agreed scope.',technicians:''}};}
+function blank(){return {v:1,suppliers:seedSuppliers(),jobs:[],partners:[],offerings:[],customers:[],income:[],ienq:[],proof:[],audit:[],seq:{quote:0},settings:{vatRegistered:false,vatRate:15,payInstr:'',defPayTerms:'',defValidity:14,defWarranty:'Hardware carries the supplier / manufacturer warranty stated for each item. Installation workmanship terms are stated separately. No warranty beyond the supplier or manufacturer terms is implied.',defExclusions:'Pre-existing faults unrelated to the quoted work; loss of data not caused by PixelProTech; software licences unless itemised; work outside the agreed scope.',technicians:''}};}
 var S=load();
-function norm(o){o.audit=o.audit||[];o.seq=o.seq||{quote:0};['partners','offerings','customers','income','ienq'].forEach(function(k){o[k]=o[k]||[];});o.settings=Object.assign(blank().settings,o.settings||{});return o;}
+function norm(o){o.audit=o.audit||[];o.seq=o.seq||{quote:0};['partners','offerings','customers','income','ienq','proof'].forEach(function(k){o[k]=o[k]||[];});o.settings=Object.assign(blank().settings,o.settings||{});return o;}
 function load(){try{var t=localStorage.getItem(KEY);if(t){var o=JSON.parse(t);if(o&&o.jobs&&o.suppliers){return norm(o);}}}catch(e){}return blank();}
 var saveFailed=false;
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S));saveFailed=false;}catch(e){saveFailed=true;alert('WARNING: could not save to this browser (storage full or blocked). Export your data now.');}}
 function audit(action,jobId){S.audit.push({ts:nowTs(),action:action,job:jobId||''});if(S.audit.length>3000)S.audit=S.audit.slice(-3000);}
 
-var ui={tab:'dash',jobId:null,jtab:'overview',filter:'all',q:'',supEdit:null,supShowArch:false,msg:'',itab:'partners',pEdit:null,oEdit:null,cEdit:null,eEdit:null};
+var ui={tab:'dash',jobId:null,jtab:'overview',filter:'all',q:'',supEdit:null,supShowArch:false,msg:'',itab:'partners',prEdit:null,pEdit:null,oEdit:null,cEdit:null,eEdit:null};
 function J(){return S.jobs.find(function(j){return j.id===ui.jobId;});}
 function SUP(id){return S.suppliers.find(function(s){return s.id===id;});}
 function supName(id){var s=SUP(id);return s?s.name:'(none)';}
@@ -296,6 +296,10 @@ var ACTS={
  report:function(){printReport();},
  closeprint:function(){document.getElementById('printView').className='';document.getElementById('printView').innerHTML='';},
  doprint:function(){window.print();},
+ rvparse:function(){parseReview();},
+ prfadd:function(){var p=newProof();S.proof.unshift(p);audit('Added proof record');save();ui.prEdit=p.id;render();},
+ prfedit:function(id){ui.prEdit=ui.prEdit===id?null:id;render();},
+ mkproof:function(){var j=J();var p=newProof();p.type='Completed job';p.title=[j.equip.qty>1?j.equip.qty+' × ':'',j.equip.type||'Equipment',' — ',(j.equip.unknown?'assessment & upgrade':'upgrade / repair')].join('');p.location=(j.client.loc||'');p.date=(j.install.completed||today());p.internalRef='Job '+j.ref+' (client: '+(j.client.org||'')+')';p.summary='';S.proof.unshift(p);audit('Proof draft created from job '+j.ref,j.id);save();ui.tab='proof';ui.jobId=null;ui.prEdit=p.id;render();},
  itab:function(id){ui.itab=id;render();},
  padd:function(){var p={id:uid(),name:'New partner lead',country:'',website:'',category:ICATS[0],programmeUrl:'',model:IMODELS[0],saElig:'Unknown',saSource:'',status:PSTATUSES[0],appDate:'',approvedDate:'',approvalEvidence:'',commission:'',commBasis:'Unknown',commSource:'',recurring:'',recBasis:'Unknown',recSource:'',payCurrency:'',payMethod:'',payMin:'',conditions:'',certs:'',support:'',verified:'',notes:'',corr:[],created:nowTs()};S.partners.push(p);audit('Added partner lead');save();ui.pEdit=p.id;render();},
  pedit:function(id){ui.pEdit=ui.pEdit===id?null:id;render();},
@@ -373,10 +377,10 @@ function importData(file){
 /* ---------- rendering ---------- */
 function statusBadge(s){var c='';if(s==='Completed')c='b-green';else if(s==='Cancelled')c='b-red';else if(GROUPS.install.indexOf(s)>-1||GROUPS.proc.indexOf(s)>-1)c='b-amber';else if(GROUPS.approved.indexOf(s)>-1)c='b-teal';else c='b-purple';return '<span class="badge '+c+'">'+esc(s)+'</span>';}
 function render(){
-  var tabs=[['dash','DASHBOARD'],['jobs','JOBS'],['sup','SUPPLIERS'],['war','WARRANTY REGISTER'],['intl','INTL TECH PARTNERS'],['set','SETTINGS & DATA']];
+  var tabs=[['dash','DASHBOARD'],['jobs','JOBS'],['sup','SUPPLIERS'],['war','WARRANTY REGISTER'],['intl','INTL TECH PARTNERS'],['proof','PROOF WALL'],['set','SETTINGS & DATA']];
   document.getElementById('tabs').innerHTML=tabs.map(function(t){return '<button class="tab'+(ui.tab===t[0]?' on':'')+'" data-act="tab" data-id="'+t[0]+'">'+t[1]+'</button>';}).join('');
   var m=document.getElementById('main'),h='<div class="banner"><b>Local-only data.</b> Everything on this page is stored in this browser on this device — it is not a central database and is not backed up. Export regularly (Settings &amp; Data). Anyone who can open this web page can see the tool, but not your data.</div>';
-  if(ui.tab==='dash')h+=vDash();else if(ui.tab==='jobs')h+=(ui.jobId?(ui.jobId==='__new'?vNew():vJob()):vJobs());else if(ui.tab==='sup')h+=vSup();else if(ui.tab==='war')h+=vWar();else if(ui.tab==='intl')h+=vIntl();else h+=vSet();
+  if(ui.tab==='dash')h+=vDash();else if(ui.tab==='jobs')h+=(ui.jobId?(ui.jobId==='__new'?vNew():vJob()):vJobs());else if(ui.tab==='sup')h+=vSup();else if(ui.tab==='war')h+=vWar();else if(ui.tab==='intl')h+=vIntl();else if(ui.tab==='proof')h+=vProof();else h+=vSet();
   m.innerHTML=h;
 }
 function count(group){return S.jobs.filter(function(j){return GROUPS[group].indexOf(j.status)>-1;}).length;}
@@ -497,7 +501,7 @@ function tProc(j){
   return h+'</div>';
 }
 function tInstall(j){
-  var I=j.install,h='<div class="panel"><div class="row"><h2>Job information</h2><div class="sp"></div><button data-act="report">COMPLETION REPORT (PREVIEW / PRINT)</button></div><div class="grid g3">'+JF('Technician assigned','install.tech',{ph:'name / ID'})+JF('Scheduled date','install.date',{type:'date'})+JF('Site address','install.site')+JF('Equipment identification (asset tag / serial)','install.equipId')+JF('Parts supplied','install.parts',{ph:'summary of parts installed'})+'</div></div>';
+  var I=j.install,h='<div class="panel"><div class="row"><h2>Job information</h2><div class="sp"></div><button data-act="mkproof">CREATE PROOF DRAFT FROM THIS JOB</button><button data-act="report">COMPLETION REPORT (PREVIEW / PRINT)</button></div><div class="grid g3">'+JF('Technician assigned','install.tech',{ph:'name / ID'})+JF('Scheduled date','install.date',{type:'date'})+JF('Site address','install.site')+JF('Equipment identification (asset tag / serial)','install.equipId')+JF('Parts supplied','install.parts',{ph:'summary of parts installed'})+'</div></div>';
   h+='<div class="panel"><h2>Installation checklist</h2>';
   CHECKLIST.forEach(function(c){var k='install.checklist.'+c[0]+'.';var v=I.checklist[c[0]]||{};h+='<div class="grid" style="grid-template-columns:30px 1fr 1.2fr;align-items:start;gap:10px;margin-bottom:6px"><div>'+F('','job',k+'done',!!v.done,{type:'checkbox'})+'</div><div style="font-family:var(--mono);font-size:12px;color:var(--muted);padding-top:2px">'+esc(c[1])+'</div><div>'+F('','job',k+'note',v.note||'',{bare:1,ph:'note / value'})+'</div></div>';});
   h+='</div><div class="panel"><h2>Test result</h2><p class="sub" style="margin-bottom:12px">Installing a part does not mean the machine is repaired. Record the technician\'s actual test outcome.</p><div class="grid g3">'+JF('Test result','install.result',{type:'select',opts:RESULTS.map(function(r){return [r,r||'— not yet recorded —'];})})+JF('Completion date','install.completed',{type:'date'})+'</div>'+JF('Outstanding issues / faults','install.outstanding',{type:'textarea'})+JF('Technician notes','install.notes',{type:'textarea'})+'</div>';
@@ -664,6 +668,55 @@ function iIncome(){
   h+='<div class="grid g4" style="margin-bottom:14px">'+Object.keys(by).map(function(k){return '<div class="stat"><div class="n">'+esc(k)+' '+Number(by[k]).toLocaleString('en-ZA',{minimumFractionDigits:2})+'</div><div class="l">Recorded income ('+esc(k)+')</div></div>';}).join('')+'</div>';
   var popts=[['','—']].concat(S.partners.map(function(p){return [p.id,p.name];}));
   h+='<div class="panel tw"><table><tr><th>Date</th><th>Partner</th><th>Type</th><th>Amount</th><th>Currency</th><th>Statement / reference</th><th>Notes</th></tr>'+S.income.map(function(x){function X(k,o){o=o||{};o.bare=1;return CF('income',x,'',k,o);}return '<tr><td>'+X('date',{type:'date'})+'</td><td>'+X('partnerId',{type:'select',opts:popts})+'</td><td>'+X('type',{type:'select',opts:['Commission','Reseller margin','Implementation fee','Support fee','Recurring share','Other']})+'</td><td>'+X('amount',{num:1,type:'number',after:'render'})+'</td><td>'+X('currency',{type:'select',opts:CURR,after:'render'})+'</td><td>'+X('ref')+'</td><td>'+X('notes')+'</td></tr>';}).join('')+'</table></div>';
+  return h;
+}
+
+/* ================= PROOF WALL ================= */
+var PTYPES=['Completed job','Client testimonial','Certificate / credential','Photo evidence'];
+var PPERM=['None','Written consent — anonymous','Written consent — client named'];
+function newProof(){return {id:uid(),type:PTYPES[0],title:'',location:'',date:'',summary:'',image:'',client:'',internalRef:'',permission:PPERM[0],permissionRef:'',rating:0,verifiedJob:'',reviewerContact:'',listed:false,created:nowTs()};}
+function parseReview(){
+  var t=document.getElementById('rawrv').value,out=document.getElementById('rvmsg');
+  if(!t.trim()){out.innerHTML='<div class="msg err">Paste the review text first.</div>';return;}
+  function g(label){var m=t.match(new RegExp('^'+label+'\\s*(.*)$','m'));return m?m[1].trim():'';}
+  var ref=(t.match(/(RV-[A-Z0-9]{6})/)||[])[1];
+  if(!ref||!/Permission to publish: Yes/.test(t)){out.innerHTML='<div class="msg err">This does not look like a review sent from the website form (missing reference or publish permission). Add it manually if the client gave permission another way.</div>';return;}
+  if(S.proof.some(function(x){return x.internalRef&&x.internalRef.indexOf(ref)>-1;})){out.innerHTML='<div class="msg err">Review '+esc(ref)+' is already recorded.</div>';return;}
+  var rating=parseInt((g('Rating:').match(/\d/)||[0])[0],10)||0;
+  var p=newProof();p.type='Client testimonial';p.title=g('Service received:')||'Customer review';p.summary=g('Review:');p.rating=rating;p.client=g('Name:');p.reviewerContact=g('Contact:');
+  p.permission=/Display as: named/.test(t)?PPERM[2]:PPERM[1];p.permissionRef='Submitted via website review form '+ref+' on '+today();p.internalRef='Review '+ref;p.date=today();
+  S.proof.unshift(p);audit('Review imported '+ref);save();ui.prEdit=p.id;render();
+}
+function jobOptions(){return [['','— not confirmed —']].concat(S.jobs.map(function(j){return [j.ref,j.ref+' · '+(j.client.org||'')+(j.status==='Completed'?'':' ('+j.status+')')];}));}
+function proofPublishable(p){
+  if(!p.title)return 'needs a title';
+  if(p.permission===PPERM[0])return 'no written client permission recorded';
+  if(!p.permissionRef)return 'no reference for the written permission (email / WhatsApp date / signed form)';
+  if(p.permission===PPERM[2]&&!p.client)return 'client is set to be named but no client name entered';
+  if(p.type==='Client testimonial'&&!p.summary)return 'a testimonial needs the client\'s actual words in the summary';
+  if(p.type==='Client testimonial'&&!p.verifiedJob&&!p.verifiedOther)return 'reviewer not confirmed as a real customer — link the job they came from, or tick "confirmed another way" and note how';
+  if(p.type==='Client testimonial'&&p.verifiedOther&&!p.verifiedNote)return 'you ticked "confirmed another way" — write how you confirmed it';
+  return '';
+}
+function vProof(){
+  var h='<div class="row"><div><div class="hud">// Public proof</div><h1>Proof wall</h1><p class="sub">Only real work with written client permission can be published. A record cannot be listed until permission and its reference are recorded. Testimonials must be the client\'s own words. Don\'t include street addresses, phone numbers, faces or other personal details in public text or photos.</p></div><div class="sp"></div><button class="pri" data-act="prfadd">+ ADD PROOF RECORD</button></div><div style="height:14px"></div><div class="panel"><h3>Customer reviews from the website form</h3><p class="sub" style="margin-bottom:10px">Customers write their review on the site; it arrives on your WhatsApp or email. Paste it here. It is saved as a testimonial with the customer\'s own words, rating and publish permission — but stays unpublished until you confirm they are a real customer.</p><textarea id="rawrv" placeholder="CUSTOMER REVIEW — RV-XXXXXX …"></textarea><div style="height:10px"></div><button data-act="rvparse">CREATE TESTIMONIAL FROM PASTED REVIEW</button><div id="rvmsg"></div></div>';
+  if(!S.proof.length)h+='<div class="empty">No proof records yet. Create one from a completed job (Installation tab) or add manually.</div>';
+  S.proof.forEach(function(p){
+    var open=ui.prEdit===p.id,why=proofPublishable(p);
+    h+='<div class="panel"><div class="row"><div><h3 style="margin:0">'+esc(p.title||'Untitled')+'</h3><div class="row" style="margin-top:6px"><span class="badge">'+esc(p.type)+'</span><span class="badge '+(p.permission===PPERM[0]?'b-red':'b-green')+'">'+esc(p.permission)+'</span>'+(p.listed&&!why?'<span class="badge b-teal">LISTED</span>':'<span class="badge b-amber">NOT PUBLISHED</span>')+'</div></div><div class="sp"></div><button class="sm" data-act="prfedit" data-id="'+p.id+'">'+(open?'CLOSE':'EDIT')+'</button></div>';
+    if(open){
+      function X(l,k,o){return CF('proof',p,l,k,o);}
+      h+='<div style="height:14px"></div><div class="grid g3">'+X('Type','type',{type:'select',opts:PTYPES,after:'render'})+X('Title','title',{after:'render'})+X('Area (suburb / town only)','location')+X('Date','date',{type:'date'})+X('Photo file name (same folder as index.html)','image',{ph:'e.g. lab-upgrade.jpg'})+X('Client name to show (only if permitted)','client')+'</div>'+X('Summary / client\'s own words','summary',{type:'textarea'})+'<div class="grid g3">'+X('Client permission','permission',{type:'select',opts:PPERM,after:'render'})+X('Permission reference','permissionRef',{ph:'email date / WhatsApp / signed form'})+X('Internal reference (never published)','internalRef')+'</div>';
+      if(p.type==='Client testimonial'){
+        h+='<div class="panel" style="background:var(--dark)"><h3>Confirm the reviewer is a real customer</h3><div class="grid g3">'+(p.reviewerContact?'<div class="fg"><label>Contact they gave (internal)</label><div style="padding:10px 0;font-family:var(--mono);font-size:12px;color:var(--teal)">'+esc(p.reviewerContact)+'</div></div>':'')+X('Rating (1–5)','rating',{num:1,type:'number',after:'render'})+X('Linked job','verifiedJob',{type:'select',opts:jobOptions(),after:'render'})+'</div>'+X('Confirmed another way (e.g. pre-system job)','verifiedOther',{type:'checkbox',after:'render'})+(p.verifiedOther?X('How you confirmed it','verifiedNote',{ph:'e.g. called client on 9 Nov, invoice #…'}):'')+'<p class="sub">Do not publish a review you cannot tie to a real job. Reviews are published exactly as written; do not edit the words. A low rating is still a genuine review — publishing only the good ones is selective, so keep your approach consistent.</p></div>';
+      }
+      if(why)h+='<div class="msg warn">Cannot be listed: '+esc(why)+'.</div>';
+      h+='<label class="ck"><input type="checkbox" data-scope="coll" data-coll="proof" data-sid="'+p.id+'" data-f="listed" data-after="render"'+(p.listed?' checked':'')+(why?' disabled':'')+'> <span>Include in public export</span></label>';
+    }
+    h+='</div>';
+  });
+  var out=S.proof.filter(function(p){return p.listed&&!proofPublishable(p);}).map(function(p){var x={type:p.type,title:p.title};if(p.location)x.location=p.location;if(p.date)x.date=p.date;if(p.summary)x.summary=p.summary;if(p.image)x.image=p.image;if(p.type==='Client testimonial'&&p.rating>0)x.rating=p.rating;if(p.permission===PPERM[2]&&p.client)x.client=p.client;return x;});
+  h+='<div class="panel"><h2>Public export</h2><p class="sub" style="margin-bottom:10px">Paste into the <b>PROOF_ITEMS</b> line in index.html and re-upload it. Upload any photo files into the same folder (flat, no subfolders). Internal references and anonymous clients\' names are never exported.</p><textarea readonly style="min-height:120px" onclick="this.select()">var PROOF_ITEMS = '+esc(JSON.stringify(out,null,2))+';</textarea></div>';
   return h;
 }
 
