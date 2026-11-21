@@ -1,0 +1,10 @@
+name = "pixelprotech-chat"
+main = "worker.js"
+compatibility_date = "2025-01-01"
+
+[vars]
+ALLOWED_ORIGINS = "https://pixelprotechsolutions.co.za,https://www.pixelprotechsolutions.co.za"
+MODEL = "google/gemini-2.0-flash-001"
+
+# Add the key as a secret (never put it in this file):
+#   npx wrangler secret put OPENROUTER_API_KEY
