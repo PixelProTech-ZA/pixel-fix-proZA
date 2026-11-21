@@ -1,6 +1,6 @@
 (function () {
-  // After deploying the Worker, paste its URL here (e.g. https://pixelprotech-chat.YOURNAME.workers.dev)
-  var WORKER_URL = "https://pixelprotech-chat.YOURNAME.workers.dev";
+  // After deploying the Worker, paste its URL here (e.g. https://pixelprotech-chat.lindokuhlerojasmabika.workers.dev)
+  var WORKER_URL = "https://pixelprotech-chat.lindokuhlerojasmabika.workers.dev";
   var WA = "https://wa.me/27651971461";
   var history = [];
   var busy = false;
