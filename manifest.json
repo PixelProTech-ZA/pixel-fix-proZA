@@ -1,11 +1,11 @@
 {
-  "name": "PixelProTech Solutions | Computer Repairs & IT Support Gauteng",
+  "name": "PixelProTech Solutions | IT Support Gauteng",
   "short_name": "PixelProTech",
-  "description": "Fast, reliable IT support, computer repairs, and network solutions across Gauteng — Johannesburg, Pretoria, Midrand & Centurion. Same-day service.",
+  "description": "Fast, reliable IT support, computer repairs, and network solutions across Gauteng \u2014 Johannesburg, Pretoria, Midrand & Centurion. Same-day service.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
-  "orientation": "portrait-primary",
+  "orientation": "any",
   "theme_color": "#050507",
   "background_color": "#050507",
   "icons": [
@@ -26,6 +26,35 @@
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
+    }
+  ],
+  "id": "ppt-pixelprotech-website",
+  "lang": "en-ZA",
+  "categories": [
+    "business",
+    "productivity",
+    "utilities"
+  ],
+  "shortcuts": [
+    {
+      "name": "Book a visit",
+      "url": "./index.html#contact",
+      "icons": [
+        {
+          "src": "icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Track a ticket",
+      "url": "./index.html#contact",
+      "icons": [
+        {
+          "src": "icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
     }
   ]
 }

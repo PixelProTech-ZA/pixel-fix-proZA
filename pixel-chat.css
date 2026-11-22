@@ -19,3 +19,12 @@
 .pc-form button:disabled{opacity:.5;cursor:default}
 .pc-foot{font-family:var(--mono);font-size:9px;color:var(--dimmer);text-align:center;padding:0 10px 8px}
 @media(max-width:560px){.pc-launch{right:78px}.pc-panel{right:16px;bottom:80px}}
+@media(max-width:1023px){
+ .pc-launch{display:none}
+ .pc-panel{left:0;right:0;bottom:0;width:100%;max-width:none;height:86dvh;max-height:86dvh;border-radius:18px 18px 0 0;border-bottom:0;z-index:300;padding-bottom:env(safe-area-inset-bottom)}
+ .pc-form input{font-size:16px;min-height:48px;border-radius:8px}
+ .pc-form button{min-width:64px;min-height:48px;border-radius:8px}
+ .pc-close{min-width:44px;min-height:44px;font-size:26px}
+ .pc-chip{font-size:12px;padding:10px 14px;min-height:40px}
+ .pc-msg{font-size:13px}
+}
